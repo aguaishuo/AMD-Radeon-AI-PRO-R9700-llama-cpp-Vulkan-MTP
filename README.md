@@ -1,8 +1,10 @@
 # AMD Radeon AI PRO R9700 / RX 9700 — llama.cpp Vulkan Inference Optimization Guide
 
-> RDNA4 (gfx1201) Vulkan 推理优化指南 — 覆盖 27B Dense + 35B MoE 两种模型架构
+> RDNA4 (gfx1201) Vulkan 推理优化指南 — 覆盖 Dense 与 MoE 两种模型架构
 >
-> RDNA4 (gfx1201) Vulkan inference optimization guide — covering 27B Dense + 35B MoE architectures
+> RDNA4 (gfx1201) Vulkan inference optimization guide — covering Dense and MoE architectures
+>
+> **Latest data: 2026-09-18**, llama.cpp build 10820 — Qwen3.8-27B (dense + MTP) and Qwen3-VL-30B-A3B (MoE)
 
 [![GPU](https://img.shields.io/badge/GPU-AMD%20Radeon%20AI%20PRO%20R9700-red)](https://www.amd.com/en/products/graphics/workstations/radeon-ai-pro/r9700.html)
 [![Backend](https://img.shields.io/badge/Backend-Vulkan-blue)](https://github.com/ggml-org/llama.cpp)
@@ -17,13 +19,24 @@
 | GPU | AMD Radeon AI PRO R9700 / RX 9700 — 32GB GDDR6, 256-bit bus (~576 GB/s) |
 | CPU | AMD Ryzen 7 5700X (8 cores) |
 | OS | Ubuntu 24.04 |
-| Driver | RADV Mesa (Vulkan, `gfx1201`, `KHR_cooperative_matrix`) |
-| llama.cpp | **Latest master** (build 9870+, Vulkan backend) |
+| Kernel | Linux 7.0.0-31-generic |
+| Driver | RADV Mesa 25.2.8 (Vulkan, `gfx1201`, `KHR_cooperative_matrix`), Vulkan loader 1.3.275 |
+| llama.cpp | **build 10820** (`74a7c897f`, Vulkan backend) — retested 2026-09-18 |
 | Key env | `RADV_DEBUG=nocompute` — essential for RDNA4 Vulkan perf |
 
 ---
 
 ## Models Tested / 已测试模型
+
+**Current generation (2026-09-18 retest, llama.cpp build 10820):**
+
+| Model | Architecture | Size | Quant | File Size | Effective params/token |
+|---|---|---|---|---|---|
+| Qwen3.8-27B | Dense | 27B | Q4_K_M | ~17 GiB | 27B (full) |
+| Qwen3.8-27B-ABLITERATED | Dense | 27B | Q4_K_M | ~16 GiB | 27B (full) |
+| Qwen3-VL-30B-A3B-Instruct | MoE (VLM) | 30.5B total | Q4_K_M | ~18 GiB | ~3B |
+
+**Previous generation (historical data, kept for the optimization timeline):**
 
 | Model | Architecture | Size | Quant | File Size | Effective params/token |
 |---|---|---|---|---|---|
@@ -35,7 +48,77 @@
 
 ## Benchmark Results / 测试结果
 
-### 1️⃣ Qwen3.6-27B Q4_K_M — Dense Model
+### 🆕 2026-09-18 Retest — Qwen3.8 / Qwen3-VL generation (llama.cpp build 10820)
+
+> Measured through the live `llama-server` OpenAI-compatible endpoint, `temperature=0`, thinking disabled
+> (`chat_template_kwargs.enable_thinking=false`). Numbers are llama.cpp's own `timings`
+> (`prompt_per_second` / `predicted_per_second`), not wall-clock estimates. Every prompt carries a unique
+> nonce so no run reuses the KV cache.
+>
+> 通过运行中的 llama-server 实测，取 llama.cpp 自带 `timings` 字段；每次请求加随机前缀，避免命中 KV 缓存。
+
+#### Qwen3.8-27B Q4_K_M — Dense + MTP (`--spec-draft-n-max 2`)
+
+Two independent runs; ranges show run-to-run spread.
+
+| Context | Metrics | pp (t/s) | tg (t/s) |
+|---|---|---|---|
+| **Short** (pp=26) | gen=16 | 89–91 | 61 |
+| **Medium** (pp≈185) | gen=16 | 301–313 | 60–61 |
+| **Long** (pp≈493) | gen=16 | **567–576** | 52–61 |
+| **Sustained** (pp≈47) | gen=256 | 141–147 | 50–53 |
+| | gen=512 | 143–145 | 52–54 |
+
+> MTP draft acceptance on sustained generation: **67–69%**, mean accepted draft length 2.34–2.38
+> (with `--spec-draft-n-max 2`). Short bursts hit 82–100% acceptance but are too small to be representative.
+>
+> ⚠️ Short-burst tg (gen=16) is noisy on a dense + MTP setup — the same case measured 52 and 61 t/s on two
+> consecutive runs. Only the sustained 256/512-token figures are stable enough to compare configurations.
+
+#### Qwen3.8-27B-ABLITERATED Q4_K_M — Dense + MTP (same flags)
+
+| Context | Metrics | pp (t/s) | tg (t/s) |
+|---|---|---|---|
+| **Short** (pp=27) | gen=16 | 66 | 54 |
+| **Medium** (pp=186) | gen=16 | 259 | 52 |
+| **Long** (pp=492) | gen=16 | **510** | 52 |
+| **Sustained** (pp=47) | gen=256 | 101 | 55 |
+| | gen=512 | 114 | **56** |
+
+> Draft acceptance 68–69%, mean length 2.36–2.38 — the abliterated weights behave the same as the base
+> model here. tg sits ~3–8% below the base model; pp is ~10% lower.
+
+#### Qwen3-VL-30B-A3B-Instruct Q4_K_M — MoE (no MTP, `-b 4096 -ub 512`)
+
+| Context | Metrics | pp (t/s) | tg (t/s) |
+|---|---|---|---|
+| **Short** (pp=19) | gen=16 | 276 | 140 |
+| **Medium** (pp=179) | gen=16 | 1201 | 141 |
+| **Long** (pp=486) | gen=16 | **1986** | 139 |
+| **Sustained** (pp=40) | gen=256 | 400 | 165 |
+| | gen=512 | 652 | **179** |
+
+> ⚠️ This container runs a locally built image (`llama-cpp-mtp:vulkan`, build `2d97363`) and sets
+> `VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.json` **without** `RADV_DEBUG=nocompute` —
+> yet still reaches 179 t/s, the fastest sustained decode measured on this box. The two dense models
+> run the official `ghcr.io/ggml-org/llama.cpp:server-vulkan` image with `RADV_DEBUG=nocompute`.
+
+#### Generation-over-generation summary
+
+| Model | Arch | tg @ sustained | pp @ ~490 ctx |
+|---|---|---|---|
+| Qwen3.6-35B-A3B (2026-07 data) | MoE | ~155–160 | ~243 |
+| Qwen3-VL-30B-A3B (2026-09) | MoE | **165–179** | **1986** |
+| Qwen3.6-27B (2026-07 data) | Dense + MTP n-max 3 | ~59–60 | ~489 |
+| Qwen3.8-27B (2026-09) | Dense + MTP n-max 2 | 50–54 | **567–576** |
+
+> The dense 27B lost a few t/s moving from `--spec-draft-n-max 3` to `2`, but gained prefill throughput.
+> On this box `n-max 2` was kept because it measured a higher acceptance rate in mixed production traffic;
+> if you run mostly long single-turn generations, `n-max 3` is worth re-testing.
+
+---
+
+### 1️⃣ Qwen3.6-27B Q4_K_M — Dense Model (2026-07 data, build 9870)
 
 > **Optimization path: MTP speculative decoding** — the R9700's 256-bit bus is the bottleneck for dense 27B. MTP boosts effective throughput by accepting ~2 tokens per step. This was the original optimization explored in the project.
 
@@ -80,7 +163,7 @@ llama-server \
 
 ---
 
-### 2️⃣ Qwen3.6-35B-A3B Q4_K — MoE Model
+### 2️⃣ Qwen3.6-35B-A3B Q4_K — MoE Model (2026-07 data, build 9870)
 
 > **Optimization path: RADV_DEBUG=nocompute + latest llama.cpp** — MoE's sparse activation (~6.5B/token) means MTP is unnecessary. The bottleneck is kernel dispatch overhead on RDNA4, solved by `RADV_DEBUG=nocompute`.
 
@@ -174,15 +257,34 @@ RADV_DEBUG=nocompute GGML_VK_VISIBLE_DEVICES=0 \
     -n 512 -p 32 -ngl 999 -fa 0 -b 16384 -ub 2048 -r 3
 ```
 
-### curl API test (35B)
+### Server benchmark (the 2026-09-18 numbers above)
+
+[`scripts/bench-server.py`](scripts/bench-server.py) drives a running `llama-server` and reports its own
+`timings` across short/medium/long prefill and sustained 256/512-token generation:
 
 ```bash
-curl http://localhost:8080/v1/completions \
-  -H 'Content-Type: application/json' \
-  -d '{"prompt": "test", "max_tokens": 128, "temperature": 0}'
+LLAMA_URL=http://localhost:8080 LLAMA_API_KEY=your-key \
+  python3 scripts/bench-server.py Qwen3.8-27B-Q4K_M
 ```
 
-Check the `usage.time_per_output_token_ms` / `predicted_per_second` fields in the response.
+Each request gets a random nonce prefix so the KV cache is never reused, and the long-generation cases use
+a prompt that forces the model to keep producing tokens — otherwise the model stops early and the reported
+tg is measured over a handful of tokens rather than the requested 256/512.
+
+### Single curl check
+
+```bash
+curl http://localhost:8080/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{"model":"your-alias","messages":[{"role":"user","content":"test"}],
+       "max_tokens":128,"temperature":0,
+       "chat_template_kwargs":{"enable_thinking":false}}'
+```
+
+Read `timings.prompt_per_second` / `timings.predicted_per_second` in the response.
+
+> ⚠️ With thinking-capable Qwen3.x models, leave `enable_thinking` on and you are benchmarking reasoning
+> tokens, not answer tokens — and a small `max_tokens` can return an empty `content` entirely.
 
 ---
 
