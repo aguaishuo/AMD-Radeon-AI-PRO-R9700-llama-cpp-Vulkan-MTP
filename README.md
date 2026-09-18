@@ -4,7 +4,9 @@
 >
 > RDNA4 (gfx1201) Vulkan inference optimization guide — covering Dense and MoE architectures
 >
-> **Latest data: 2026-09-18**, llama.cpp build 10820 — Qwen3.8-27B (dense + MTP) and Qwen3-VL-30B-A3B (MoE)
+> **Latest data: 2026-09-18**, llama.cpp build 10820 — one model per role, all measured on the same box:
+> MoE text (35B-A3B), vision (VL-30B-A3B), dense reasoning (27B + MTP). Only one runs at a time —
+> 32 GB of VRAM does not hold two of these.
 
 [![GPU](https://img.shields.io/badge/GPU-AMD%20Radeon%20AI%20PRO%20R9700-red)](https://www.amd.com/en/products/graphics/workstations/radeon-ai-pro/r9700.html)
 [![Backend](https://img.shields.io/badge/Backend-Vulkan-blue)](https://github.com/ggml-org/llama.cpp)
@@ -32,9 +34,10 @@
 
 | Model | Architecture | Size | Quant | File Size | Effective params/token |
 |---|---|---|---|---|---|
-| Qwen3.8-27B | Dense | 27B | Q4_K_M | ~17 GiB | 27B (full) |
+| Huihui-Qwen3.6-35B-A3B-abliterated | MoE | 35.5B total | Q4_K | ~21.7 GiB | ~3B |
 | Qwen3.8-27B-ABLITERATED | Dense | 27B | Q4_K_M | ~16 GiB | 27B (full) |
 | Qwen3-VL-30B-A3B-Instruct | MoE (VLM) | 30.5B total | Q4_K_M | ~18 GiB | ~3B |
+| Qwen3.8-27B (base) | Dense | 27B | Q4_K_M | ~17 GiB | retired 2026-09-18 — duplicated the abliterated slot |
 
 **Previous generation (historical data, kept for the optimization timeline):**
 
@@ -56,6 +59,30 @@
 > nonce so no run reuses the KV cache.
 >
 > 通过运行中的 llama-server 实测，取 llama.cpp 自带 `timings` 字段；每次请求加随机前缀，避免命中 KV 缓存。
+
+#### Huihui-Qwen3.6-35B-A3B-abliterated Q4_K — MoE (no MTP, `-b 4096 -ub 512`, 32768 ctx)
+
+| Context | Metrics | pp (t/s) | tg (t/s) |
+|---|---|---|---|
+| **Short** (pp=26) | gen=16 | 228 | 114 |
+| **Medium** (pp=186) | gen=16 | 553 | 113 |
+| **Long** (pp=492) | gen=16 | **1805** | 114 |
+| **Sustained** (pp=47) | gen=256 | 243 | 129 |
+| | gen=512 | 389 | **145** |
+
+**Real workload** — summarizing a 64 KB stage-1 JSON record (video frame analysis) into a structured report:
+
+| Prompt tokens | pp (t/s) | tg (t/s) | Total wall |
+|---|---|---|---|
+| 16,813 | **2419** | **138** | 33.3 s |
+
+> ⚠️ These numbers run **lower** than the 2026-07 figures recorded further down for the vanilla
+> Qwen3.6-35B-A3B on build 9870 (tg 160 @ gen=512, pp 2273 @ 490 ctx). Two variables changed at once —
+> abliterated weights (21.7 GiB vs 20.2 GiB) **and** the build — so this is not a controlled comparison and
+> should not be read as a build regression. The real-workload prefill (2419 t/s at 16.8k tokens) is the
+> highest sustained pp measured on this box.
+>
+> VRAM after load: 21.8 GB of 34.2 GB, so `--ctx-size` has room to grow well beyond 32768.
 
 #### Qwen3.8-27B Q4_K_M — Dense + MTP (`--spec-draft-n-max 2`)
 
@@ -108,6 +135,7 @@ Two independent runs; ranges show run-to-run spread.
 | Model | Arch | tg @ sustained | pp @ ~490 ctx |
 |---|---|---|---|
 | Qwen3.6-35B-A3B (2026-07 data) | MoE | ~155–160 | ~243 |
+| Qwen3.6-35B-A3B-abliterated (2026-09) | MoE | 129–145 | **1805** |
 | Qwen3-VL-30B-A3B (2026-09) | MoE | **165–179** | **1986** |
 | Qwen3.6-27B (2026-07 data) | Dense + MTP n-max 3 | ~59–60 | ~489 |
 | Qwen3.8-27B (2026-09) | Dense + MTP n-max 2 | 50–54 | **567–576** |
