@@ -4,9 +4,10 @@
 >
 > RDNA4 (gfx1201) Vulkan inference optimization guide — covering Dense and MoE architectures
 >
-> **Latest data: 2026-09-18**, llama.cpp build 10820 — one model per role, all measured on the same box:
-> MoE text (35B-A3B), vision (VL-30B-A3B), dense reasoning (27B + MTP). Only one runs at a time —
-> 32 GB of VRAM does not hold two of these.
+> **Latest data: 2026-10-03** (long-context scaling) · 2026-09-18 (per-model benchmarks) — llama.cpp
+> build 10820, one model per role, all measured on the same box: MoE text (35B-A3B), vision
+> (VL-30B-A3B), dense reasoning (27B + MTP). Only one runs at a time — 32 GB of VRAM does not hold
+> two of these.
 
 [![GPU](https://img.shields.io/badge/GPU-AMD%20Radeon%20AI%20PRO%20R9700-red)](https://www.amd.com/en/products/graphics/workstations/radeon-ai-pro/r9700.html)
 [![Backend](https://img.shields.io/badge/Backend-Vulkan-blue)](https://github.com/ggml-org/llama.cpp)
@@ -259,6 +260,58 @@ From [llama.cpp discussion #19890](https://github.com/ggml-org/llama.cpp/discuss
 | **tg128** | **183.5 ± 1.0** | ~86% bandwidth utilization |
 | pp512 | 3032.6 ± 23.5 | |
 | pp1024 | 3009.0 ± 25.2 | |
+
+---
+
+### 🆕 Long-Context Scaling — Qwen3.8-27B Dense + MTP (2026-10-03)
+
+> Depth series on the dense slot. Every depth measured over **≥256 generated tokens** with a unique
+> per-request prefix; figures are llama.cpp's own `print_timing` (`prompt eval time` / `eval time`),
+> never wall clock. Full method, raw log excerpts and cross-source comparison:
+> **[`docs/long-context-scaling.md`](docs/long-context-scaling.md)**.
+
+| Context | Prefill (t/s) | **Decode (t/s)** | MTP acceptance |
+|---:|---:|---:|---:|
+| 18K | 826 | **45.07** | 1.00 |
+| 48K | 666 | **37.41** | 1.00 |
+| 93K | 510 | **30.34** | 1.00 |
+| 138K | 411 | **25.54** | 1.00 |
+| **247K** | 264 | **18.07** | 1.00 |
+
+**Findings**
+
+- **No cliff — decode decays ~−15% per context doubling** (45.1 → 18.1 t/s across 18K → 247K); 247K
+  retains 41% of the short-context rate. A **247,001-token** request completed with `truncated = 0`
+  (947s end-to-end, full 262144 window).
+- **MTP is *stronger* at depth, not weaker.** Acceptance stays at **1.00** (`170 accepted / 170
+  generated`, mean accepted length 3.00) at every depth — versus 67–69% on short production traffic.
+  The recurrent-state snapshot cost that motivates the usual "MTP hurts at long context" concern does
+  not show up here at `--spec-draft-n-max 2`.
+- **Prefill is the long-context cost, not decode.** 247K tokens take **15.6 minutes** to ingest before
+  the first output token. That is the Dense-vs-MoE architectural gap, not a tuning failure — the MoE
+  slot ingests a comparable depth in ~5 min. Route very long documents to the MoE slot; keep the dense
+  27B for ≤100K deep-reasoning work.
+- ⚠️ **Two benchmark traps this series flushed out** (both have produced false public reports for this
+  model family): decode samples under ~100 tokens understate throughput by **2.3×** — at the same 18K
+  depth an 8-token sample read **19.9 t/s** while a 256-token sample read **45.1 t/s** — and Python
+  clients without TCP keepalive hit `ConnectionResetError` during multi-minute prefills, while `curl`
+  (keepalive on by default) is unaffected.
+- Reproduce with **[`scripts/bench-longctx.py`](scripts/bench-longctx.py)**.
+
+**Cross-check vs community numbers**
+
+| Source | Setup | Decode |
+|---|---|---|
+| **This box** | R9700 Vulkan, MTP n=2, Q4_K_M, empty ctx (sustained) | **55–56 t/s** |
+| **This box** | same, at **18K ctx** | **45.1 t/s** |
+| [AlanHuang99/qwen3.6-mtp-stack](https://github.com/AlanHuang99/qwen3.6-mtp-stack) | R9700 Vulkan, MTP **n=3**, Q5_K_M / Q6_K | 53.5 / 52.8 t/s (accept ~72%) |
+| [discussion #21043](https://github.com/ggml-org/llama.cpp/discussions/21043) | R9700 RADV, Q4_K_M, **no MTP** | 29.1 t/s (32.5 with ASPM) |
+| [club-3090 #94](https://github.com/noonghunna/club-3090/issues/94) | **RTX 3090** CUDA, MTP, **91K prompt** | 47.8 t/s |
+
+> The published R9700 MTP figure (52.8–53.5 t/s at `n=3`, Q5/Q6) sits just below this box at `n=2` with
+> the smaller Q4_K_M quant — consistent, since Q4_K_M reads less bandwidth. The RTX 3090's 47.8 t/s at
+> 91K prompt scales to ~33 t/s at the R9700's 1.46× lower memory bandwidth, and **30.3 t/s measured at
+> 93K lands at ~92% of that parity** — the denser card is not underperforming, the bus is the bus.
 
 ---
 
