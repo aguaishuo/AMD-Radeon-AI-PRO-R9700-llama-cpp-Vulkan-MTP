@@ -293,9 +293,10 @@ From [llama.cpp discussion #19890](https://github.com/ggml-org/llama.cpp/discuss
   27B for ≤100K deep-reasoning work.
 - ⚠️ **Two benchmark traps this series flushed out** (both have produced false public reports for this
   model family): decode samples under ~100 tokens understate throughput by **2.3×** — at the same 18K
-  depth an 8-token sample read **19.9 t/s** while a 256-token sample read **45.1 t/s** — and Python
-  clients without TCP keepalive hit `ConnectionResetError` during multi-minute prefills, while `curl`
-  (keepalive on by default) is unaffected.
+  depth an 8-token sample read **19.9 t/s** while a 256-token sample read **45.1 t/s** — and a multi-minute
+  prefill can fail on a Python client when the host runs a **system proxy**: httpx (`trust_env=True` by
+  default) and urllib read the macOS system proxy while `curl` does not, so a LAN endpoint gets dialed
+  through the proxy and returns `502`/reset. Pass `trust_env=False`, or use `curl`.
 - Reproduce with **[`scripts/bench-longctx.py`](scripts/bench-longctx.py)**.
 
 **Cross-check vs community numbers**

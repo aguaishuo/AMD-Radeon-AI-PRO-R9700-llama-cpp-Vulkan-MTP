@@ -9,9 +9,12 @@ Why this script exists — three traps it avoids:
 2. EVERY REQUEST NEEDS A UNIQUE PREFIX, otherwise llama-server reuses its prefix cache and
    reports prefill throughput over evaluated tokens only (a 216K prompt once reported a fake
    515 t/s while half of it was a cache hit).
-3. LONG PREFILLS KILL CLIENTS WITHOUT TCP KEEPALIVE. llama-server sends nothing before the
-   first output token; Python urllib/http.client gets ConnectionResetError after a few minutes
-   of silence while curl (keepalive on by default) is fine. This script shells out to curl.
+3. LONG PREFILLS FAIL ON CLIENTS THAT TRUST THE SYSTEM PROXY. llama-server sends nothing before
+   the first output token, so a multi-minute prefill is a long silence. On a host with a system
+   proxy configured, httpx (trust_env=True by default) and urllib read that proxy while curl does
+   not: a LAN endpoint gets dialed through the proxy and the request dies (502, or a reset).
+   Pass trust_env=False, or shell out to curl as this script does. A missing TCP keepalive is a
+   separate candidate cause that we could not reproduce once the proxy was bypassed.
 
 Timings are read from the server's own log lines (prompt eval time / eval time / draft
 acceptance) rather than wall clock, so prefill and decode are never conflated.

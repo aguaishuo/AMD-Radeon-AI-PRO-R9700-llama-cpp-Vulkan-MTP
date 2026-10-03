@@ -91,19 +91,31 @@ llama-server reuses its prefix cache across requests sharing a prefix, and repor
 over *evaluated* tokens only — a 216K-token prompt once reported a fake **515 t/s** while 108K of it was
 a cache hit. Always cross-check the token count on the `prompt eval time` line against the request size.
 
-### 3. Long prefills break clients without TCP keepalive
+### 3. A multi-minute prefill fails on a Python client behind a system proxy
 
-llama-server sends **nothing** on the connection before the first output token. A client with no TCP
-keepalive gets reset by intermediate gear during a multi-minute prefill:
+llama-server sends **nothing** on the connection before the first output token, so a long prefill is a long
+silence. Where that silence bites depends on the **client**, not the server:
 
 | Client | Long-prefill result |
 |---|---|
-| Python `urllib` / `http.client` | `ConnectionResetError: [Errno 54] Connection reset by peer` |
-| `curl` (keepalive on by default) | works, no change needed |
+| `curl` | works — it reads `*_proxy` **environment variables only**, never the OS proxy settings |
+| `httpx` (`trust_env=True`, the default) / `urllib` | **`502`**, or a reset — on a host with a system proxy they also read the macOS system proxy and dial the LAN endpoint *through* it |
+| `httpx(trust_env=False)` | works |
 
-This is easy to misdiagnose as a server crash — the server-side logs show the request completing
-successfully while the client sees a reset. **Use `curl` (or set `SO_KEEPALIVE`) for long-context
-benchmarking**, and give the timeout room: a full-window prefill measured **933s**, so start at `-m 1800`.
+Measured here: the same LAN URL returned **`200`** via `curl` and **`502`** (7.4s) via bare `httpx`;
+forcing `curl -x 127.0.0.1:7897` reproduced the `502`, and `trust_env=False` returned `200` in 0.1s.
+The macOS proxy exception list *did* contain `192.168.0.0/16` — but httpx/urllib honour only
+`NO_PROXY`, not the OS exception list, so the dial went to the proxy anyway.
+
+This is easy to misdiagnose as a server crash (or a keepalive problem): the server log shows the request
+completing while the client sees a `502`/reset. **Pass `trust_env=False`, or use `curl`, for long-context
+benchmarking**, and give the timeout room — a full-window prefill measured **933s**, so start at `-m 1800`.
+
+> **Correction (2026-10-03).** An earlier revision of this section blamed a missing TCP keepalive. The
+> `curl`-works/`urllib`-fails split we saw is fully explained by the system proxy above (`curl` bypasses it
+> by default), so keepalive was misdiagnosed. A 241K-token prefill then ran **752s** on
+> `httpx(trust_env=False)` with a complete SSE stream and no reset. Keepalive remains a *plausible* cause
+> on other setups, but it is **not** what was happening here.
 
 ---
 
