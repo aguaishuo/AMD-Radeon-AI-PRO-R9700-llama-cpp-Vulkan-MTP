@@ -400,14 +400,34 @@ Without this: ~120 t/s → With this: **~138 t/s** (+15%). Also pair with the **
 | llama-bench peak | **~165 t/s** |
 | MTP | **Regresses** (-24%) — do not use |
 
-### System-level
+### System-level — measured, and **not worth it for long-context work**
+
+Both tweaks were benchmarked with and without, at four depths (256-token decode samples,
+server-side timings, same box and build):
+
+| Config | 18K dec | 93K dec | 138K dec | 247K dec | 18K pp | 93K pp | 247K pp |
+|---|---|---|---|---|---|---|---|
+| Factory (neither) | 45.08 | 30.34 | 25.54 | 18.07 | 818.6 | 510 | 264 |
+| ASPM + GPU `high` | **50.94** | **35.59** | **30.13** | **21.76** | 747 | 435 | 229 |
+| **ASPM only** | 46.36 | 29.76 | — | — | 795 | 491 | — |
+
+- **The decode gain comes entirely from `power_dpm_force_performance_level=high`**, not
+  from ASPM. ASPM by itself is within noise (+2.8% / -1.9%).
+- **That same switch costs 9-16% prefill.** Peak prefill drops 264 -> 229 t/s at 247K,
+  i.e. **15.6 -> 18.0 minutes** to ingest a full window.
+- Net for long-context work: **wait ~2.4 extra minutes at 247K to save ~9 seconds per 1k
+  generated tokens.** Not worth it - reverted to factory, and the post-revert run
+  (44.58 t/s / 819 t/s) matches the factory baseline.
+
+The `+10%` circulated in [discussion #21043](https://github.com/ggml-org/llama.cpp/discussions/21043)
+is likely the GPU-clock effect attributed to ASPM, or a different driver/workload
+combination - it did **not** reproduce here.
 
 ```bash
-# PCIe ASPM performance mode — +~10% decode
-echo performance | sudo tee /sys/module/pcie_aspm/parameters/policy
-
-# GPU power to high — stable clock speed
-echo high | sudo tee /sys/class/drm/card1/device/power_dpm_force_performance_level
+# If you still want the decode boost and rarely ingest long prompts:
+echo high | sudo tee /sys/class/drm/card0/device/power_dpm_force_performance_level
+# Revert:
+echo auto | sudo tee /sys/class/drm/card0/device/power_dpm_force_performance_level
 ```
 
 Resets on reboot. See [`scripts/system-optimize.sh`](scripts/system-optimize.sh) for a persistent setup.
@@ -474,8 +494,8 @@ See [`docker-compose.yml`](docker-compose.yml) for two configs:
 | Optimization | tg | pp | Notes |
 |---|---|---|---|
 | **MTP spec decoding** | **+100%** | — | Biggest single gain for dense models |
-| PCIe ASPM performance | +10% | +10% | Free, system-level |
-| GPU power high | stabilizes | stabilizes | Prevents throttle |
+| PCIe ASPM performance | ~0 | −3% | **No gain on this box** — see System-level |
+| GPU power high | **+13–20%** | **−9–16%** | Trades prefill for decode — skip for long context |
 | `--flash-attn on` + `-b 16384` | — | significant | Must use together |
 
 ### 35B MoE Model
@@ -484,8 +504,8 @@ See [`docker-compose.yml`](docker-compose.yml) for two configs:
 |---|---|---|---|
 | **Latest llama.cpp master** | **+40%** | +15% | `KHR_cooperative_matrix` support |
 | **`RADV_DEBUG=nocompute`** | **+15%** | Minor | RDNA4 gfx1201 must-have |
-| PCIe ASPM performance | +10% | +10% | Free, system-level |
-| GPU power high | stabilizes | stabilizes | Prevents throttle |
+| PCIe ASPM performance | ~0 | −3% | **No gain on this box** — see System-level |
+| GPU power high | **+13–20%** | **−9–16%** | Trades prefill for decode — skip for long context |
 | `--flash-attn on` | negligible | significant | Standard recommendation |
 | MTP | **-24%** | N/A | Only for dense models |
 

@@ -1,7 +1,14 @@
 #!/bin/bash
-# AMD RDNA4 system-level optimizations for LLM inference
+# AMD RDNA4 system-level tweaks for LLM inference
 # Run with sudo / 需要 sudo 执行
 # Reference: https://github.com/ggml-org/llama.cpp/discussions/21043
+#
+# !! MEASURED ON AN R9700 (2026-10-03): these are NOT a free win.
+#    Decode +13..+20%, but prefill -9..-16% (peak pp 264 -> 229 t/s @247K, i.e.
+#    15.6 -> 18.0 min to ingest a full 262144 window). The decode gain comes from
+#    power_dpm_force_performance_level=high alone; ASPM contributes nothing
+#    measurable on this box. Skip this script if you ingest long prompts.
+#    See README section "System-level".
 
 set -e
 

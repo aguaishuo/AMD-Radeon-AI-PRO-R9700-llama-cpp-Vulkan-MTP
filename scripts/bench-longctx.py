@@ -111,6 +111,13 @@ def main():
     p.add_argument("--timeout", type=int, default=1800, help="curl -m seconds (full-window prefill ~933s)")
     args = p.parse_args()
 
+    # Line-buffer stdout: a long run killed by an external `timeout` would otherwise lose
+    # every result still sitting in the buffer.
+    try:
+        sys.stdout.reconfigure(line_buffering=True)
+    except AttributeError:
+        pass
+
     TPL = 28  # tokens per filler line, approximate
     print(f"{'target':>8} | {'prefill':>22} | {'decode':>26} | {'MTP':>6} | wall")
     print("-" * 84)
