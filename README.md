@@ -335,11 +335,18 @@ From [llama.cpp discussion #19890](https://github.com/ggml-org/llama.cpp/discuss
 | mean accepted length | 3.00 | 4.90 | **7.5** |
 | prefill @104K | 465 | 463 | 458 |
 
-- **`--spec-draft-n-max 2` → `4` is +18–29% decode for one flag and zero VRAM.** Acceptance moves 1.00 →
-  0.98 while the mean accepted length goes 3.0 → 4.9 — the acceptance rate alone hides the whole gain.
-- **DFlash2 at n-max 7 is the long-context winner:** **47.3 t/s at a 104K prompt vs 29.1 on the current
-  production config**. It costs +1.85 GB VRAM and ≤2% of prefill. At n-max 3 (what the HIP report used)
-  it loses to MTP — block drafting needs its width.
+- **`--spec-draft-n-max 2` → `4` is +18–29% decode for one flag and zero VRAM — on copy-style prompts.**
+  On realistic Chinese prose it is **−20%** (36.98 → 29.60 t/s): a wider block drafts and verifies tokens
+  that prose rejects. Acceptance moves 1.00 → 0.98 while the mean accepted length goes 3.0 → 4.9 —
+  the acceptance rate alone hides all of this, so quote the **mean accepted length**.
+- **DFlash2 at n-max 7 wins on code / copy / structured output (+40–80%) and LOSES on prose.** Realistic
+  A/B, same box: Python 68.55 vs 49.22 t/s, but 中文说明文 24.73 vs **36.98**, 小红书文案 18.13 vs **29.69**,
+  and a real 24K-document *summarise* task 23.52 vs **32.43**. The +63%-at-104K headline above came from
+  a 104K *copy* prompt: the drafter is trained on the non-abliterated target and accepts only 0.08–0.32
+  on prose. **Production was switched to DFlash2, validated end-to-end (mmproj + drafter, 28.0/32.6 GB
+  VRAM, vision intact) and reverted to MTP n-max 2 the same evening.** The drafter stays on disk for a
+  code-only route.
+- ⚠️ **A/B speculative decoders on your own prompt mix, never on a copy task.**
 - ⚠️ **Speculative routes are not byte-identical at temperature 0.** The same coding prompt produced
   semantically identical code under MTP and DFlash2 but not byte-identical text (one `import` line moved).
   Gate correctness on semantics, not on a token-hash comparison.
@@ -421,10 +428,16 @@ Without this: ~120 t/s → With this: **~138 t/s** (+15%). Also pair with the **
 |---|---|
 | No MTP (baseline) | ~20 t/s |
 | MTP (`--spec-type draft-mtp`, `--spec-draft-n-max 3`) | ~42 t/s (2×) |
-| **MTP `--spec-draft-n-max 4 --spec-draft-p-min 0.10`** | **+18–29% over n-max 2 at every depth** |
-| **DFlash2 (`-md` drafter, `--spec-type draft-dflash --spec-draft-n-max 7`)** | **+30% short → +63% at 104K** |
+| **MTP `--spec-draft-n-max 2` (serving default)** | **best all-round: 36.98 prose / 32.43 @24K summarise / 49.22 code** |
+| MTP `--spec-draft-n-max 4 --spec-draft-p-min 0.10` | +15–25% on code/math/copy, **−20% on prose** — use only for structured workloads |
+| **DFlash2 (`-md` drafter, `--spec-draft-n-max 7`)** | **code/copy +40–80%, prose −26 to −39%** — code-only route |
 | Required pairing | `-b 16384 -ub 2048`, `--parallel 1`, `--flash-attn on` |
 | Extra VRAM for DFlash2 | +1.85 GB (1.1 GB drafter + f16 draft KV) |
+
+> ⚠️ **Draft width and external drafters are workload-dependent on this box.** Chinese free-form prose and
+> real long-document summarisation prefer plain `n-max 2`; anything code/copy/JSON-shaped prefers DFlash2.
+> Numbers above are 400-token generations at `temperature 0`; full table in
+> [`docs/dflash2-vs-mtp-draft-width.md`](docs/dflash2-vs-mtp-draft-width.md).
 
 ### ✅ For 35B MoE: Latest llama.cpp + RADV_DEBUG=nocompute
 
@@ -529,8 +542,8 @@ See [`docker-compose.yml`](docker-compose.yml) for two configs:
 | Optimization | tg | pp | Notes |
 |---|---|---|---|
 | **MTP spec decoding** | **+100%** | — | Biggest single gain for dense models |
-| **MTP draft width 4** (`--spec-draft-n-max 4 --spec-draft-p-min 0.10`) | **+18–29%** | ~0 | Free: one flag, no VRAM, mean accepted length 3.0 → 4.9 |
-| **DFlash2 drafter, `--spec-draft-n-max 7`** | **+30% → +63% at 104K** | −≤2% | 1.1 GB drafter, +1.85 GB VRAM; the long-context winner |
+| **MTP draft width (n-max 2 → 4)** | **+15–25% code/math/copy · −20% prose** | ~0 | Free flag, but workload-dependent — see the draft-width doc |
+| **DFlash2 drafter** | **+40–80% code/copy · −26–39% prose** | −≤2% | 1.1 GB drafter, +1.85 GB VRAM; code-only route |
 | PCIe ASPM performance | ~0 | −3% | **No gain on this box** — see System-level |
 | GPU power high | **+13–20%** | **−9–16%** | Trades prefill for decode — skip for long context |
 | `--flash-attn on` + `-b 16384` | — | significant | Must use together |

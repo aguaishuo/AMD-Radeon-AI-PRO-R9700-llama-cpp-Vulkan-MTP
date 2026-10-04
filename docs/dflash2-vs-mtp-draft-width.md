@@ -8,6 +8,12 @@ Every depth was measured over **≥256 generated tokens** with a unique per-requ
 llama.cpp's own `print_timing` lines (`prompt eval time` / `eval time`), never wall clock. A point is
 printed only when `n_tokens` matches the prompt actually sent and `truncated = 0`.
 
+> **⚠️ Read the [Boundary section](#-boundary-which-workload-the-drafter-actually-wins) before quoting any
+> number below.** Every table on this page was measured with "copy the document back verbatim" prompts,
+> the friendliest possible workload for a drafter. On realistic prompts — Chinese free-form writing and
+> long-document summarisation — the DFlash2 drafter is **26–39% slower** than plain MTP n-max 2, and
+> **production was reverted to MTP n-max 2** the same evening.
+
 ## Why this measurement exists
 
 Two public R9700 reports (all on the HIP/ROCm backend) claimed:
@@ -100,6 +106,49 @@ of prefill plus ~9 s of generation. Use [`scripts/bench-depths.py`](../scripts/b
 - **Read decode only from `eval time`, never from the new `tg_3s` rolling line.** This build also logs
   `n_gen = 318, tg = 51.82 t/s, tg_3s = 70.72 t/s` mid-request; the 3-second window reads 40% high.
   The authoritative per-request number is the `eval time` line, checked against its token count.
+
+## ⚠️ Boundary: which workload the drafter actually wins (measured the same evening)
+
+**Everything above was measured on "copy the last 40 lines of the document verbatim" prompts.** That is
+the friendliest possible workload for any drafter and it flatters every speculative route. A second pass
+with realistic prompts — same box, `temperature 0`, ≥256 generated tokens, server-side timings — reverses
+the recommendation:
+
+| Workload (generated tokens) | **MTP n-max 2** | MTP n-max 4 | DFlash2 n-max 7 |
+|---|---:|---:|---:|
+| 中文说明文 · Chinese explanatory prose (400) | **36.98** (acc 0.59) | 29.60 (0.31) | 24.73 (0.15) |
+| 小红书种草文案 · social copy (400) | **29.69** (0.39) | — | 18.13 (0.08) |
+| 客户报价邮件 · business email (400) | **38.00** (0.62) | — | 28.14 (0.21) |
+| 长文档总结 24K prompt · summarise a real document | **32.43** (0.69) | — | 23.52 (0.32) |
+| Python 代码 · code generation (400) | 49.22 (0.93) | 56.69 (0.81) | **68.55** (0.80) |
+| 数学分步推导 · step-by-step math (400) | 48.45 (0.90) | 55.19 (0.78) | **58.51** (0.64) |
+| 逐行抄写 4.4K prompt · copy task (256) | 49.64 (1.00) | 60.13 (0.99) | **73.32** (0.92) |
+
+**Read this before copying any number from this page:**
+
+- **On Chinese free-form writing and on real long-document summarisation, DFlash2 is 26–39% *slower*
+  than the config it was meant to replace**, because drafter acceptance collapses (0.08–0.32 vs
+  0.59–0.69 for MTP). It retires the "+63% at 104K" headline in the TL;DR: that figure came from a
+  104K *copy* prompt, and a 24K *summarise* prompt — the slot's actual job — puts DFlash2 at 23.5 t/s
+  against MTP n-max 2's **32.4 t/s**.
+- **Why the collapse:** the DFlash2 drafter is trained against the official `Qwen/Qwen3.8-27B`, while the
+  slot serves an **abliterated** fine-tune. On low-entropy, highly predictable text (code, reformatting,
+  verbatim copy) the two agree and acceptance stays high; on free-form prose the fine-tune's distribution
+  drifts away from the drafter and acceptance falls off a cliff. **MTP heads ship inside the target
+  model, so they do not suffer this.**
+- **MTP n-max 4 is also workload-dependent**: +15–25% on code/math/copy, but **−20% on prose** (36.98 →
+  29.60) since a wider block wastes drafting+verification on tokens that will not be accepted. The
+  acceptance rate still looks respectable (0.31) while the mean accepted length stays at 2.23 — the
+  block is simply thrown away. `--spec-draft-n-max 2` remains the best all-round value on this box.
+- **This also corrects our own depth series.** `long-context-scaling.md` measured 45.07 t/s at an 18K
+  *copy* prompt; the same slot on an 18–24K *summarise* prompt delivers **32.4 t/s**. The series is
+  internally consistent for A/B-ing configurations but is **not** a forecast for real work.
+- **Production decision (2026-10-04):** the slot was switched to DFlash2, validated end-to-end
+  (mmproj + drafter booted, 28.0/32.6 GB VRAM, vision path intact), and then **reverted to MTP n-max 2**
+  once the prose numbers landed. The drafter stays on disk for a future code-only route.
+
+**The reusable rule: A/B speculative decoders on your own prompt mix, never on a copy task.** If you
+only take one number from this page, take the acceptance rate measured on prose.
 
 ## Cross-check vs the HIP reports
 

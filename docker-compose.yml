@@ -71,18 +71,22 @@ services:
       --cache-type-k q4_0
       --cache-type-v q4_0
       --spec-type draft-mtp
-      --spec-draft-n-max 4
+      --spec-draft-n-max 2
       --spec-draft-p-min 0.10
       --api-key your-api-key
       --metrics
 
   # ============================================
   # Configuration C: 27B Dense + DFlash2 block-diffusion drafter
-  # Best measured route for long context on this box (2026-10-04):
-  #   104K prompt: 47.30 t/s vs 29.07 t/s on MTP n-max 2 (+63%)
-  #   16K prompt : 69.58 t/s vs 44.84 t/s (+55%)
-  # Costs +1.85 GB VRAM and <=2% of prefill. Needs llama.cpp build 10820+ (PR #27342).
-  # Drafter: https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2-GGUF (Q4_K_M, 1.09 GiB)
+  # USE ONLY FOR CODE / COPY / STRUCTURED OUTPUT. Measured 2026-10-04:
+  #   code generation   68.55 t/s vs 49.22 (MTP n-max 2)   WIN
+  #   verbatim copy     73.32 t/s vs 49.64                 WIN
+  #   Chinese prose     24.73 t/s vs 36.98                 LOSS -33%
+  #   social copy       18.13 t/s vs 29.69                 LOSS -39%
+  #   24K doc summarise 23.52 t/s vs 32.43                 LOSS -27%
+  # The drafter is trained on the NON-abliterated target; acceptance collapses on free-form prose
+  # (0.08-0.32) while staying high on code (0.80). Costs +1.85 GB VRAM, <=2% of prefill.
+  # Needs llama.cpp build 10820+ (PR #27342). Drafter: z-lab/Qwen3.8-27B-DFlash2-GGUF (Q4_K_M).
   # ============================================
   llama-27b-dflash:
     image: llama-cpp-vulkan:latest
