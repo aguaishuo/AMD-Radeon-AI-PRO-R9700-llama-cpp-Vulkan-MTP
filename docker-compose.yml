@@ -37,8 +37,10 @@ services:
 
   # ============================================
   # Configuration B: 27B Dense (with MTP)
-  # Best for Qwen3.6-27B / similar dense models
+  # Best for Qwen3.6-27B / Qwen3.8-27B / similar dense models
   # MTP speculative decoding gives ~2× speedup
+  # 2026-10-04: draft width 2 -> 4 measured +18-29% decode (mean accepted length 3.0 -> 4.9);
+  #             DFlash2 (config C below) measured +30%..+63% and is the long-context winner.
   # ============================================
   llama-27b:
     image: llama-cpp-vulkan:latest
@@ -69,6 +71,52 @@ services:
       --cache-type-k q4_0
       --cache-type-v q4_0
       --spec-type draft-mtp
-      --spec-draft-n-max 3
+      --spec-draft-n-max 4
+      --spec-draft-p-min 0.10
+      --api-key your-api-key
+      --metrics
+
+  # ============================================
+  # Configuration C: 27B Dense + DFlash2 block-diffusion drafter
+  # Best measured route for long context on this box (2026-10-04):
+  #   104K prompt: 47.30 t/s vs 29.07 t/s on MTP n-max 2 (+63%)
+  #   16K prompt : 69.58 t/s vs 44.84 t/s (+55%)
+  # Costs +1.85 GB VRAM and <=2% of prefill. Needs llama.cpp build 10820+ (PR #27342).
+  # Drafter: https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2-GGUF (Q4_K_M, 1.09 GiB)
+  # ============================================
+  llama-27b-dflash:
+    image: llama-cpp-vulkan:latest
+    container_name: llama-27b-dflash
+    restart: unless-stopped
+    ports:
+      - "30003:8080"
+    volumes:
+      - /path/to/your/models:/models
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - video
+    environment:
+      - GGML_VK_VISIBLE_DEVICES=0
+      - RADV_DEBUG=nocompute           # REQUIRED for RDNA4 gfx1201
+    command: >
+      --model /models/Qwen3.8-27B-Q4_K_M.gguf
+      --model-draft /models/Qwen3.8-27B-DFlash2-Q4_K_M.gguf
+      --spec-draft-ngl 999
+      --spec-draft-type-k f16
+      --spec-draft-type-v f16
+      --alias Qwen3.8-27B-Q4K_M
+      --host 0.0.0.0
+      --port 8080
+      --n-gpu-layers 999
+      --ctx-size 262144
+      --parallel 1
+      --flash-attn on
+      -b 16384
+      -ub 2048
+      --cache-type-k q4_0
+      --cache-type-v q4_0
+      --spec-type draft-dflash
+      --spec-draft-n-max 7
       --api-key your-api-key
       --metrics

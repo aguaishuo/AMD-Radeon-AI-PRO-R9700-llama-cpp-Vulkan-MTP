@@ -4,7 +4,8 @@
 >
 > RDNA4 (gfx1201) Vulkan inference optimization guide — covering Dense and MoE architectures
 >
-> **Latest data: 2026-10-03** (long-context scaling) · 2026-09-18 (per-model benchmarks) — llama.cpp
+> **Latest data: 2026-10-04** (draft width 4 / DFlash2 drafter) · 2026-10-03 (long-context scaling) ·
+> 2026-09-18 (per-model benchmarks) — llama.cpp
 > build 10820, one model per role, all measured on the same box: MoE text (35B-A3B), vision
 > (VL-30B-A3B), dense reasoning (27B + MTP). Only one runs at a time — 32 GB of VRAM does not hold
 > two of these.
@@ -316,6 +317,36 @@ From [llama.cpp discussion #19890](https://github.com/ggml-org/llama.cpp/discuss
 
 ---
 
+### 🆕 Draft Width 4 and the DFlash2 Drafter — Qwen3.8-27B Dense (2026-10-04)
+
+> Two claims from the public R9700 HIP reports ([`sklarsa/inference-notes`](https://github.com/sklarsa/inference-notes))
+> tested on this box's Vulkan path: **MTP draft width 4** (`--spec-draft-n-max 4 --spec-draft-p-min 0.10`)
+> and the **DFlash2 block-diffusion drafter** ([`z-lab/Qwen3.8-27B-DFlash2-GGUF`](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2-GGUF),
+> 1.1 GB — build 10820 supports it natively via `--spec-type draft-dflash`). Same protocol as the series
+> above: unique prefix, ≥256 generated tokens, server-side `print_timing`. Full method and traps:
+> **[`docs/dflash2-vs-mtp-draft-width.md`](docs/dflash2-vs-mtp-draft-width.md)**.
+
+| Prompt | prod MTP n-max 2 | MTP n-max 4 | **DFlash2 n-max 7** |
+|---:|---:|---:|---:|
+| 1.7K | 48.82 | 63.07 (+29%) | 63.32 (**+30%**) |
+| 16K | 44.84 | 55.19 (+23%) | **69.58** (**+55%**) |
+| 52K | 36.82 | 43.55 (+18%) | **44.11** (**+20%**) |
+| 104K | 29.07 | 32.35 (+11%) | **47.30** (**+63%**) |
+| mean accepted length | 3.00 | 4.90 | **7.5** |
+| prefill @104K | 465 | 463 | 458 |
+
+- **`--spec-draft-n-max 2` → `4` is +18–29% decode for one flag and zero VRAM.** Acceptance moves 1.00 →
+  0.98 while the mean accepted length goes 3.0 → 4.9 — the acceptance rate alone hides the whole gain.
+- **DFlash2 at n-max 7 is the long-context winner:** **47.3 t/s at a 104K prompt vs 29.1 on the current
+  production config**. It costs +1.85 GB VRAM and ≤2% of prefill. At n-max 3 (what the HIP report used)
+  it loses to MTP — block drafting needs its width.
+- ⚠️ **Speculative routes are not byte-identical at temperature 0.** The same coding prompt produced
+  semantically identical code under MTP and DFlash2 but not byte-identical text (one `import` line moved).
+  Gate correctness on semantics, not on a token-hash comparison.
+- Reproduce with **[`scripts/bench-depths.py`](scripts/bench-depths.py)**.
+
+---
+
 ## Benchmark Reproduction / 本地重现
 
 ### llama-bench
@@ -389,8 +420,11 @@ Without this: ~120 t/s → With this: **~138 t/s** (+15%). Also pair with the **
 | Setting | tg Speedup |
 |---|---|
 | No MTP (baseline) | ~20 t/s |
-| **MTP (`--spec-type draft-mtp`, `--spec-draft-n-max 3`)** | **~42 t/s (2×)** |
+| MTP (`--spec-type draft-mtp`, `--spec-draft-n-max 3`) | ~42 t/s (2×) |
+| **MTP `--spec-draft-n-max 4 --spec-draft-p-min 0.10`** | **+18–29% over n-max 2 at every depth** |
+| **DFlash2 (`-md` drafter, `--spec-type draft-dflash --spec-draft-n-max 7`)** | **+30% short → +63% at 104K** |
 | Required pairing | `-b 16384 -ub 2048`, `--parallel 1`, `--flash-attn on` |
+| Extra VRAM for DFlash2 | +1.85 GB (1.1 GB drafter + f16 draft KV) |
 
 ### ✅ For 35B MoE: Latest llama.cpp + RADV_DEBUG=nocompute
 
@@ -495,6 +529,8 @@ See [`docker-compose.yml`](docker-compose.yml) for two configs:
 | Optimization | tg | pp | Notes |
 |---|---|---|---|
 | **MTP spec decoding** | **+100%** | — | Biggest single gain for dense models |
+| **MTP draft width 4** (`--spec-draft-n-max 4 --spec-draft-p-min 0.10`) | **+18–29%** | ~0 | Free: one flag, no VRAM, mean accepted length 3.0 → 4.9 |
+| **DFlash2 drafter, `--spec-draft-n-max 7`** | **+30% → +63% at 104K** | −≤2% | 1.1 GB drafter, +1.85 GB VRAM; the long-context winner |
 | PCIe ASPM performance | ~0 | −3% | **No gain on this box** — see System-level |
 | GPU power high | **+13–20%** | **−9–16%** | Trades prefill for decode — skip for long context |
 | `--flash-attn on` + `-b 16384` | — | significant | Must use together |
@@ -516,6 +552,9 @@ See [`docker-compose.yml`](docker-compose.yml) for two configs:
 
 - [llama.cpp Discussion #19890 — R9700 Performance Study](https://github.com/ggml-org/llama.cpp/discussions/19890)
 - [llama.cpp RDNA4 Experiments Discussion #21043](https://github.com/ggml-org/llama.cpp/discussions/21043)
+- [llama.cpp PR #27342 — DFlash2 speculative decoding](https://github.com/ggml-org/llama.cpp/pull/27342)
+- [sklarsa/inference-notes — single-GPU Qwen3.8-27B on the R9700 (HIP)](https://github.com/sklarsa/inference-notes/blob/main/reports/2026-08-25-qwen3.8-27b-r9700.md)
+- [z-lab/Qwen3.8-27B-DFlash2-GGUF — block-diffusion drafter](https://huggingface.co/z-lab/Qwen3.8-27B-DFlash2-GGUF)
 - [llama.cpp Vulkan Backend](https://github.com/ggml-org/llama.cpp)
 - [RADV Mesa Driver](https://docs.mesa3d.org/drivers/radv.html)
 - [AMD Radeon AI PRO R9700 Specs](https://www.amd.com/en/products/graphics/workstations/radeon-ai-pro/r9700.html)
