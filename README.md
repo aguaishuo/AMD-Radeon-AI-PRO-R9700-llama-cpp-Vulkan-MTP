@@ -339,9 +339,10 @@ From [llama.cpp discussion #19890](https://github.com/ggml-org/llama.cpp/discuss
   On realistic Chinese prose it is **−20%** (36.98 → 29.60 t/s): a wider block drafts and verifies tokens
   that prose rejects. Acceptance moves 1.00 → 0.98 while the mean accepted length goes 3.0 → 4.9 —
   the acceptance rate alone hides all of this, so quote the **mean accepted length**.
-- **DFlash2 at n-max 7 wins on code / copy / structured output (+40–80%) and LOSES on prose.** Realistic
+- **DFlash2 wins on code / copy / structured output (+40–80%) and LOSES on prose.** Realistic
   A/B, same box: Python 68.55 vs 49.22 t/s, but 中文说明文 24.73 vs **36.98**, 小红书文案 18.13 vs **29.69**,
-  and a real 24K-document *summarise* task 23.52 vs **32.43**. The +63%-at-104K headline above came from
+  and a real 24K-document *summarise* task 23.52 vs **32.43** — at the report's own `n-max 3` the gaps
+  narrow to **12–27%** (same-session A/B in the doc) but MTP still wins. The +63%-at-104K headline above came from
   a 104K *copy* prompt: the drafter is trained on the non-abliterated target and accepts only 0.08–0.32
   on prose. **Production was switched to DFlash2, validated end-to-end (mmproj + drafter, 28.0/32.6 GB
   VRAM, vision intact) and reverted to MTP n-max 2 the same evening.** The drafter stays on disk for a

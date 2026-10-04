@@ -126,9 +126,10 @@ the recommendation:
 
 **Read this before copying any number from this page:**
 
-- **On Chinese free-form writing and on real long-document summarisation, DFlash2 is 26–39% *slower*
-  than the config it was meant to replace**, because drafter acceptance collapses (0.08–0.32 vs
-  0.59–0.69 for MTP). It retires the "+63% at 104K" headline in the TL;DR: that figure came from a
+- **On Chinese free-form writing and on real long-document summarisation, DFlash2 is *slower* than the
+  config it was meant to replace** — **12–27% slower at the report's own `n-max 3`**, and 26–39% slower at
+  the `n-max 7` this page used (see the width A/B below; the first draft of this section overstated the
+  gap by quoting only the n-max 7 runs). Drafter acceptance is 0.18–0.54 vs 0.39–0.74 for MTP. It retires the "+63% at 104K" headline in the TL;DR: that figure came from a
   104K *copy* prompt, and a 24K *summarise* prompt — the slot's actual job — puts DFlash2 at 23.5 t/s
   against MTP n-max 2's **32.4 t/s**.
 - **Why the collapse:** the DFlash2 drafter is trained against the official `Qwen/Qwen3.8-27B`, while the
@@ -146,6 +147,40 @@ the recommendation:
 - **Production decision (2026-10-04):** the slot was switched to DFlash2, validated end-to-end
   (mmproj + drafter booted, 28.0/32.6 GB VRAM, vision path intact), and then **reverted to MTP n-max 2**
   once the prose numbers landed. The drafter stays on disk for a future code-only route.
+
+### Width matters on prose too — same-session A/B (2026-10-05)
+
+Same box, same session, same throwaway container shape, identical prompts, `temperature 0`, server timings.
+This is what makes the previous section's headline honest: **the report's `n-max 3` is 12–21% faster than
+the `n-max 7` used above on prose**, so part of the "26–39%" gap was my own mis-set width.
+
+| Workload | **DFlash2 n-max 3** (the report's value) | **MTP n-max 2** | DFlash2 n-max 7 |
+|---|---:|---:|---:|
+| 中文说明文 · Chinese explanatory prose | 27.55 (acc 0.339, mean 2.02) | **36.71** (0.590, 2.18) | 22.77 (0.150, 2.05) |
+| 小红书文案 · social copy | 22.69 (0.184, 1.55) | **31.13** (0.392, 1.78) | 19.85 (0.076, 1.53) |
+| 24K 文档总结 · real long-doc summarise | 32.16 (0.535, 2.61) | **36.40** (0.736, 2.47) | 28.84 (0.277, 2.94) |
+| prefill @24K | 722 | **759** | 716 |
+| prefill @326-token prompt | 119 | **194** | 114 |
+| boot VRAM (GB) | 26.2 | **24.8** | 26.8 |
+
+**What actually costs the time — measured, not inferred:**
+
+- **The target model takes the same number of forward passes in all three configs.** 400 generated tokens
+  ≈ 99 target steps under both MTP n-max 2 and DFlash2 n-max 7. The deficit is therefore **not** "the
+  drafter cannot predict this model's prose" (accepted tokens per step are comparable: 2.18 vs 2.05 prose,
+  2.47 vs 2.94 summarise) — it is **the drafter's own extra forward pass every step**. MTP's heads live
+  inside the target model and cost almost nothing; a block-diffusion drafter is a second network that must
+  run for every verification round.
+- **That trade pays off only when acceptance is high.** On prose the drafter buys 0.2–0.6 extra tokens per
+  step (not enough to pay for its own forward); on code and verbatim copy it buys 3–5 (mean accepted
+  length 7.5–7.9) and wins big.
+- **DFlash2 also adds a fixed per-request draft-prefill cost, which short prompts feel most:** prefill drops
+  194 → 119 t/s on a 326-token prompt (−39%) versus only 759 → 722 at 24K (−5%). Short-chat traffic pays
+  this on every request.
+- **Correction to the attribution in the first draft:** the "the drafter was trained on the non-abliterated
+  target" explanation was an **inference**, never tested — only the abliterated weights exist on this box.
+  It is not needed to explain the measurements above. Testing it would require pulling the original
+  `Qwen/Qwen3.8-27B` (~17 GB) and re-running this table.
 
 **The reusable rule: A/B speculative decoders on your own prompt mix, never on a copy task.** If you
 only take one number from this page, take the acceptance rate measured on prose.
