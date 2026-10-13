@@ -4,6 +4,7 @@
 >
 > **Latest data: 2026-10-13** — two 27B MXFP4 models migrated to native vLLM/Radiance + DFlash;
 > 35B text and VL-30B retained Vulkan. Four selectable slots, **one GPU model active at a time**.
+> Latest follow-up: [exact 8K–128K native depth sweep](docs/native-depth-scaling-20261013.md).
 > See the [full migration report](docs/native-vllm-four-slots-20261013.md) and
 > [per-run data](results/2026-10-13-native-four-slots.json).
 > Earlier Vulkan measurements remain dated historical results; their server-side timings
@@ -68,6 +69,29 @@ Native cold reload took **177.7–204.9 s**, so hot token/s is not switching lat
 ---
 
 ## Benchmark Results / 测试结果
+
+### 2026-10-13 follow-up — exact 8K / 32K / 64K / 128K native input sweep
+
+Both 27B checkpoints, two warm runs at each depth (**16 requests**), paired identical prompts,
+K=1024 input tokens including the chat template, thinking off, 1536 output budget, zero prefix-cache hits.
+Engine PP is measured from vLLM's per-request prefill-phase histogram; decode is the client SSE rate.
+
+| Input | Standard PP (token/s) | Abliterated PP (token/s) | Standard decode (token/s) | Abliterated decode (token/s) | Standard TTFT (s) | Abliterated TTFT (s) |
+|---|---:|---:|---:|---:|---:|---:|
+| 8K | 3282 | 3377 | 59.20 | 72.39 | 2.67 | 2.70 |
+| 32K | 2929 | 2958 | 53.37 | 76.08 | 11.45 | 11.32 |
+| 64K | 2613 | 2680 | 49.07 | 66.49 | 25.35 | 24.73 |
+| 128K | 2130 | 2170 | 46.34 | 62.78 | 61.84 | 60.71 |
+
+Prefill is close between checkpoints, but the abliterated model generated **22–43% faster on this
+summary task**. Both still needed ~61 s to reach the first output at 128K. Standard recovered all six
+facts in 8/8 cases; abliterated in 7/8, with one order ID expanded incorrectly. Four standard and two
+abliterated replies had Markdown JSON fences; those format failures remain separate from semantic accuracy.
+Actual output lengths vary, so this is not a fixed-output or general-quality comparison.
+
+**[Full depth report](docs/native-depth-scaling-20261013.md)** ·
+**[All samples and synthetic answers](results/2026-10-13-native-depth-scaling.json)** ·
+**[Exact-input sweep runner](scripts/bench-native-depths.py)**.
 
 ### 2026-10-13 — Native vLLM/Radiance + DFlash vs retained Vulkan
 

@@ -4,6 +4,9 @@
 The final routing checks completed around 11:45 China Standard Time (UTC+8).
 This extends the earlier Vulkan reports; it does not replace their measurements.
 
+**Follow-up:** [exact 8K / 32K / 64K / 128K native depth sweep](native-depth-scaling-20261013.md),
+16 additional samples with engine PP, paired prompts and retained answer/format errors.
+
 本轮两个 27B 已切换到 vLLM/Radiance+DFlash，35B 和 VL-30B 保留 Vulkan。
 中文、代码、长文分别比较；失败输出、冷加载耗时和视觉读数错误也保留。
 

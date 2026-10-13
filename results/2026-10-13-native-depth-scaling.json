@@ -1,0 +1,1864 @@
+{
+  "schema_version": 1,
+  "measurement_date": "2026-10-13",
+  "timezone": "Asia/Shanghai",
+  "method": {
+    "input_depths_tokens": [
+      8192,
+      32768,
+      65536,
+      131072
+    ],
+    "runs_per_model_depth": 2,
+    "max_output_tokens": 1536,
+    "temperature": 0,
+    "thinking": false,
+    "model_order": [
+      "abliterated",
+      "standard"
+    ],
+    "paired_prompt_text_and_system_nonce_identical": true,
+    "prefix_cache_hit_tokens_all_points": 0,
+    "engine_pp": "actual input tokens / vLLM request_prefill_time_seconds_sum delta; exactly one finished request and matching token counters required",
+    "decode": "completion_tokens / (SSE stream end - first generated content); arithmetic mean of per-run rates",
+    "semantic_postcheck": "Raw JSON status retained. For the additional semantic check, strip only an enclosing Markdown JSON code fence, then compare all six fields exactly."
+  },
+  "runner_sha256": "b26b3b3d346e9e8de78149daca8b5ff6adfbea13af2fccef8a59cc84881e35fa",
+  "aggregates": {
+    "abliterated": {
+      "8": {
+        "runs": 2,
+        "input_tokens": 8192,
+        "output_tokens": [
+          476,
+          593
+        ],
+        "all_six_facts_passed": 1,
+        "raw_json_valid": 2,
+        "ttft_s": 2.695,
+        "ttft_s_range": [
+          2.668,
+          2.722
+        ],
+        "wall_s": 10.069,
+        "wall_s_range": [
+          9.343,
+          10.794
+        ],
+        "decode_tps": 72.39,
+        "decode_tps_range": [
+          71.32,
+          73.46
+        ],
+        "engine_prefill_tps": 3377.03,
+        "engine_prefill_tps_range": [
+          3340.64,
+          3413.42
+        ],
+        "effective_input_per_ttft": 3040.005,
+        "effective_input_per_ttft_range": [
+          3009.55,
+          3070.46
+        ]
+      },
+      "32": {
+        "runs": 2,
+        "input_tokens": 32768,
+        "output_tokens": [
+          401,
+          532
+        ],
+        "all_six_facts_passed": 2,
+        "raw_json_valid": 1,
+        "ttft_s": 11.322,
+        "ttft_s_range": [
+          11.259,
+          11.384
+        ],
+        "wall_s": 17.472,
+        "wall_s_range": [
+          16.432,
+          18.512
+        ],
+        "decode_tps": 76.075,
+        "decode_tps_range": [
+          74.63,
+          77.52
+        ],
+        "engine_prefill_tps": 2957.58,
+        "engine_prefill_tps_range": [
+          2949.55,
+          2965.61
+        ],
+        "effective_input_per_ttft": 2894.405,
+        "effective_input_per_ttft_range": [
+          2878.43,
+          2910.38
+        ]
+      },
+      "64": {
+        "runs": 2,
+        "input_tokens": 65536,
+        "output_tokens": [
+          475,
+          492
+        ],
+        "all_six_facts_passed": 2,
+        "raw_json_valid": 2,
+        "ttft_s": 24.731,
+        "ttft_s_range": [
+          24.72,
+          24.742
+        ],
+        "wall_s": 32.004,
+        "wall_s_range": [
+          31.999,
+          32.008
+        ],
+        "decode_tps": 66.485,
+        "decode_tps_range": [
+          65.18,
+          67.79
+        ],
+        "engine_prefill_tps": 2680.44,
+        "engine_prefill_tps_range": [
+          2678.54,
+          2682.34
+        ],
+        "effective_input_per_ttft": 2649.955,
+        "effective_input_per_ttft_range": [
+          2648.78,
+          2651.13
+        ]
+      },
+      "128": {
+        "runs": 2,
+        "input_tokens": 131072,
+        "output_tokens": [
+          453,
+          404
+        ],
+        "all_six_facts_passed": 2,
+        "raw_json_valid": 1,
+        "ttft_s": 60.705,
+        "ttft_s_range": [
+          60.673,
+          60.737
+        ],
+        "wall_s": 67.556,
+        "wall_s_range": [
+          66.93,
+          68.182
+        ],
+        "decode_tps": 62.78,
+        "decode_tps_range": [
+          60.33,
+          65.23
+        ],
+        "engine_prefill_tps": 2169.89,
+        "engine_prefill_tps_range": [
+          2168.65,
+          2171.13
+        ],
+        "effective_input_per_ttft": 2159.165,
+        "effective_input_per_ttft_range": [
+          2158.03,
+          2160.3
+        ]
+      }
+    },
+    "standard": {
+      "8": {
+        "runs": 2,
+        "input_tokens": 8192,
+        "output_tokens": [
+          503,
+          560
+        ],
+        "all_six_facts_passed": 2,
+        "raw_json_valid": 0,
+        "ttft_s": 2.666,
+        "ttft_s_range": [
+          2.546,
+          2.786
+        ],
+        "wall_s": 11.741,
+        "wall_s_range": [
+          10.419,
+          13.062
+        ],
+        "decode_tps": 59.195,
+        "decode_tps_range": [
+          54.5,
+          63.89
+        ],
+        "engine_prefill_tps": 3282.115,
+        "engine_prefill_tps_range": [
+          3248.54,
+          3315.69
+        ],
+        "effective_input_per_ttft": 3079.01,
+        "effective_input_per_ttft_range": [
+          2940.42,
+          3217.6
+        ]
+      },
+      "32": {
+        "runs": 2,
+        "input_tokens": 32768,
+        "output_tokens": [
+          576,
+          501
+        ],
+        "all_six_facts_passed": 2,
+        "raw_json_valid": 1,
+        "ttft_s": 11.448,
+        "ttft_s_range": [
+          11.386,
+          11.51
+        ],
+        "wall_s": 21.601,
+        "wall_s_range": [
+          20.319,
+          22.882
+        ],
+        "decode_tps": 53.37,
+        "decode_tps_range": [
+          50.65,
+          56.09
+        ],
+        "engine_prefill_tps": 2928.81,
+        "engine_prefill_tps_range": [
+          2911.8,
+          2945.82
+        ],
+        "effective_input_per_ttft": 2862.42,
+        "effective_input_per_ttft_range": [
+          2846.92,
+          2877.92
+        ]
+      },
+      "64": {
+        "runs": 2,
+        "input_tokens": 65536,
+        "output_tokens": [
+          538,
+          565
+        ],
+        "all_six_facts_passed": 2,
+        "raw_json_valid": 1,
+        "ttft_s": 25.351,
+        "ttft_s_range": [
+          25.302,
+          25.4
+        ],
+        "wall_s": 36.59,
+        "wall_s_range": [
+          36.499,
+          36.681
+        ],
+        "decode_tps": 49.07,
+        "decode_tps_range": [
+          48.05,
+          50.09
+        ],
+        "engine_prefill_tps": 2613.1,
+        "engine_prefill_tps_range": [
+          2609.67,
+          2616.53
+        ],
+        "effective_input_per_ttft": 2585.155,
+        "effective_input_per_ttft_range": [
+          2580.16,
+          2590.15
+        ]
+      },
+      "128": {
+        "runs": 2,
+        "input_tokens": 131072,
+        "output_tokens": [
+          556,
+          468
+        ],
+        "all_six_facts_passed": 2,
+        "raw_json_valid": 2,
+        "ttft_s": 61.838,
+        "ttft_s_range": [
+          61.76,
+          61.916
+        ],
+        "wall_s": 72.926,
+        "wall_s_range": [
+          71.72,
+          74.132
+        ],
+        "decode_tps": 46.34,
+        "decode_tps_range": [
+          44.94,
+          47.74
+        ],
+        "engine_prefill_tps": 2129.945,
+        "engine_prefill_tps_range": [
+          2127.63,
+          2132.26
+        ],
+        "effective_input_per_ttft": 2119.605,
+        "effective_input_per_ttft_range": [
+          2116.93,
+          2122.28
+        ]
+      }
+    }
+  },
+  "models": {
+    "abliterated": {
+      "schema_version": 1,
+      "model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+      "started_at_utc": "2026-10-13T09:53:14.589995+00:00",
+      "max_tokens": 1536,
+      "context": 163840,
+      "points": [
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 2.668,
+          "wall_s": 9.343,
+          "prompt_tokens": 8192,
+          "completion_tokens": 476,
+          "decode_tps": 71.32,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-480cecad\",\n  \"order_amount\": 207000,\n  \"deposit_amount\": 45000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-480cecad，合同总金额为207,000元，目前已收到客户定金45,000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已完成相应款项支付缺乏有效凭证，财务状态标记为unverified。在项目管理与施工执行过程中，核心原则是严格区分“施工资料模板”与“现场实际证据”。尽管项目文档中包含了从第00000条至第00248条的大量施工资料模板记录，但所有模板内容仅作为标准化参考，绝不能直接替代现场的实际证据。具体而言，施工团队必须对现场尺寸进行实地复核，确保数据准确无误；必须严格遵循既定的安装顺序，并在每个关键节点保留影像或文字记录；必须核对实际使用的材料品牌、规格及批次，确保与合同及设计图纸一致；此外，所有涉及变更或确认的事项，必须保留与客户沟通确认的完整记录。严禁以模板中的预设数据或通用描述来掩盖或替代现场真实的测量数据、安装过程照片及材料进场验收单。鉴于目前费用审批流程尚未闭环，且公司付款状态未获证实，项目团队在推进后续工作时，应特别注意资金流与施工进度的匹配性，避免因付款滞后影响材料采购或工人结算。同时，鉴于交付日期设定在2026年11月，项目周期较长，需建立定期的现场证据归档机制，确保每一阶段的施工资料都能真实反映现场状况，为最终的验收和结算提供坚实、不可篡改的证据链。在最终交付前，需重点核查所有模板条目是否已转化为具体的现场执行记录，确保“不以模板代替现场证据”的原则贯穿项目全生命周期，从而保障项目质量与财务合规性。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 8,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-480cecad",
+            "order_amount": 207000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "76fbbf83b83d66cb572e0f7565f4f746cf806dc005cce83a5983fd489e468715",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 659,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 2.399941415002104,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 6.676614908006741,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.8534992705099285e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 8192.0,
+            "generation_tokens_total": 476.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 3413.42,
+          "effective_input_per_ttft": 3070.46,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 659,
+          "normalized_fields": {
+            "order_id": "BENCH-480cecad",
+            "order_amount": 207000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 2.722,
+          "wall_s": 10.794,
+          "prompt_tokens": 8192,
+          "completion_tokens": 593,
+          "decode_tps": 73.46,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-a073d672c1bc404aa3039d3a13173185\",\n  \"order_amount\": 232000,\n  \"deposit_amount\": 72000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-a073d672c1bc404aa3039d3a13173185，合同总金额为232,000元。目前项目已收取定金72,000元，预计交付日期设定为2026年11月18日。在财务流程方面，费用审批流程尚未结束，处于pending状态；同时，关于公司是否已完成相应款项支付，目前缺乏确凿凭证，状态标记为unverified，需进一步跟进财务确认。项目资料库中包含了从第00000条至第00248条共计249条施工资料记录，这些记录均指向同一核心要求：施工资料模板必须严格用于核对现场尺寸、安装顺序、材料规格以及与客户确认的记录。特别强调，严禁以模板内容直接代替现场实际证据，所有关键数据必须基于现场实测和客户书面确认。鉴于当前审批未结且付款状态未明，项目团队需重点核实以下事项：首先，确认现场实际尺寸与模板预设尺寸的一致性，避免安装顺序偏差；其次，核对材料进场记录与客户确认单是否匹配，确保材料规格符合约定；最后，在费用审批完成前，需明确公司付款的具体时间节点及凭证留存方式，以保障后续结算的合规性。施工资料的使用边界在于其作为核对基准而非最终事实依据，所有现场变更、尺寸调整及材料替换均需保留独立的现场证据链，包括但不限于现场照片、测量记录及客户签字确认单。在交付前，需确保所有249条模板记录对应的现场证据已归档，且与模板内容一致，任何不一致之处需有书面变更说明。此外，鉴于交付日期为2026年11月18日，需监控当前进度与预计交付时间的匹配度，确保在审批和付款流程完成前，现场施工不因财务状态而停滞。总结而言，本项目核心风险点在于财务状态的不确定性（审批未结、付款未证）与施工资料模板化可能导致的现场证据缺失风险。建议立即启动现场证据补全工作，并同步推进财务审批流程，确保在交付日前完成所有款项确认及现场验收，避免模板代替现场证据引发的验收争议。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 8,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-a073d672",
+            "order_amount": 232000,
+            "deposit_amount": 72000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "41ba036c4f9d9633e267aeabaeb25fe660740fa32b5a133795da9b1a48774845",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": false,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 789,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 2.45222241099691,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 8.075587145998725,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.7462996765971184e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 8192.0,
+            "generation_tokens_total": 593.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 3340.64,
+          "effective_input_per_ttft": 3009.55,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": false,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 789,
+          "normalized_fields": {
+            "order_id": "BENCH-a073d672c1bc404aa3039d3a13173185",
+            "order_amount": 232000,
+            "deposit_amount": 72000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 11.259,
+          "wall_s": 16.432,
+          "prompt_tokens": 32768,
+          "completion_tokens": 401,
+          "decode_tps": 77.52,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "```json\n{\n  \"order_id\": \"BENCH-df4f51fc\",\n  \"order_amount\": 207000,\n  \"deposit_amount\": 67000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-df4f51fc，合同总金额为207000元，目前已收到定金67000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏明确凭证，财务状态标记为unverified。在项目管理与验收过程中，核心关注点在于施工资料的真实性与完整性。根据第00000条至第01016条的连续记录要求，所有施工资料必须严格遵循“不以模板代替现场证据”的原则。这意味着在核对现场尺寸、确认安装顺序、验证材料规格以及整理客户确认记录时，必须依赖实际发生的现场数据和双方签字确认的原始文件，严禁直接使用通用模板填充数据。已知事实包括订单基本信息、定金收取情况及预计交付时间，但待核实事项主要集中在费用审批的最终结果以及公司付款的实际执行凭证。施工资料的使用边界明确：模板仅作为格式参考，不能替代具体的现场测量数据、材料进场验收单、安装过程影像或客户签字确认单。为确保项目顺利交付并避免后续纠纷，需重点核实现场尺寸与图纸的一致性，确认安装顺序符合工艺规范，材料品牌型号与合同一致，并保留完整的客户确认记录。鉴于公司付款状态未验证，建议在费用审批结束后，立即补充付款凭证，并同步更新施工资料中的财务确认环节，确保账实相符。\"\n}\n```",
+          "code_validation": null,
+          "depth_kib_tokens": 32,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-df4f51fc",
+            "order_amount": 207000,
+            "deposit_amount": 67000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "c26c8ed7d89ef27d2fd592e73590e29fc869977c8451a0f836266c196c259c25",
+          "raw_json_valid": false,
+          "facts_correct": {
+            "order_id": false,
+            "order_amount": false,
+            "deposit_amount": false,
+            "delivery_date": false,
+            "approval_status": false,
+            "company_payment_status": false
+          },
+          "summary_characters": 0,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 11.049332431008224,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 5.180274302998441,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.6681995475664735e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 32768.0,
+            "generation_tokens_total": 401.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2965.61,
+          "effective_input_per_ttft": 2910.38,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 537,
+          "normalized_fields": {
+            "order_id": "BENCH-df4f51fc",
+            "order_amount": 207000,
+            "deposit_amount": 67000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": true
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 11.384,
+          "wall_s": 18.512,
+          "prompt_tokens": 32768,
+          "completion_tokens": 532,
+          "decode_tps": 74.63,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-91cc7c7d\",\n  \"order_amount\": 170000,\n  \"deposit_amount\": 68000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-91cc7c7d，合同总金额为170000元，目前已收到定金68000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏明确凭证，财务状态标记为unverified。在项目管理与验收过程中，核心关注点在于施工资料的真实性与完整性。根据第00000条至第01016条的连续记录要求，所有施工资料必须严格遵循“不以模板代替现场证据”的原则。这意味着在核对施工记录时，不能仅依赖标准化的模板文档，而必须深入核对三个关键维度的现场实证：一是现场尺寸，需确保实际施工尺寸与图纸及客户要求完全一致；二是安装顺序，需验证施工步骤是否符合工艺规范及逻辑顺序；三是材料与客户确认记录，需确认所用材料品牌、规格及批次与客户书面或口头确认的记录相符。鉴于目前存在大量重复的施工资料模板记录，项目组需警惕“模板化”风险，即避免用通用的模板内容覆盖具体的现场实测数据。待核实事项主要集中在：1. 费用审批流程的最终闭环，需确认审批节点是否全部通过；2. 公司付款凭证的补全，需获取银行流水或付款单以证实资金流向；3. 现场证据的补强，需针对尺寸、顺序、材料三项提供非模板化的原始记录，如现场照片、测量单据、材料进场验收单及客户签字确认单。在交付前，应建立独立的证据链，将模板作为记录框架，而将现场实测数据作为核心内容，确保每一笔施工记录都有据可查，避免在后续结算或验收中因证据链断裂产生争议。项目团队应重点审查从第00000条开始的所有记录，剔除纯模板内容，补充具体的现场数据，确保在2026-11-18交付前，所有关键节点均有真实的现场证据支撑，从而保障项目顺利验收及尾款结算的顺利进行。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 32,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-91cc7c7d",
+            "order_amount": 170000,
+            "deposit_amount": 68000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "701655087a37b8284197da59be363beb1bf91f9c2bdd635354c2211d8f069403",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 724,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 11.109479225007817,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 7.136893819988472,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.7272992408834398e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 32768.0,
+            "generation_tokens_total": 532.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2949.55,
+          "effective_input_per_ttft": 2878.43,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 724,
+          "normalized_fields": {
+            "order_id": "BENCH-91cc7c7d",
+            "order_amount": 170000,
+            "deposit_amount": 68000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 24.72,
+          "wall_s": 32.008,
+          "prompt_tokens": 65536,
+          "completion_tokens": 475,
+          "decode_tps": 65.18,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-2eb982af\",\n  \"order_amount\": 159000,\n  \"deposit_amount\": 45000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-2eb982af，合同总金额为159000元，目前已收到定金45000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏明确凭证，因此财务结算环节需保持谨慎，直至审批流程闭环并获取正式付款证明。在项目管理与验收环节，核心关注点在于施工资料的真实性与完整性。根据第00000条至第02040条的连续记录要求，所有施工资料必须严格遵循“现场证据优先”原则。具体而言，必须逐一核对现场实际尺寸、设备安装顺序、所用材料规格以及与客户确认的关键记录。严禁以标准化的施工资料模板直接代替现场实际证据，避免“以模板代事实”的情况发生。这意味着在整理竣工或过程资料时，不能仅依赖预设的表格或通用描述，而必须填入或附上反映真实施工情况的照片、测量数据、签字确认单等原始凭证。待核实事项主要集中在两个方面：一是费用审批的最终结果，需确认审批是否通过及具体金额；二是公司付款状态，需核实除定金外的剩余款项是否已支付，并补充相应的银行回单或支付凭证。在施工资料使用边界上，模板仅作为格式指引，用于规范文档结构，但内容必须基于现场实测数据。例如，现场尺寸需有实测记录，安装顺序需有工序日志，材料需有进场验收单，客户确认需有书面或电子签名。若发现模板内容与现场实际不符，应以现场证据为准并更新资料。目前项目尚未进入最终结算阶段，建议在交付前完成所有现场证据的归档，确保每一笔费用、每一个施工节点都有据可查，从而支撑后续的验收与付款流程。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 64,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-2eb982af",
+            "order_amount": 159000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "14ec673bad0df3a66faffaf93ee84a9608da83efb9a8aad4f099ac83d1458dc0",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 646,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 24.43244141600735,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 7.302177245990606,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.9597006030380726e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 65536.0,
+            "generation_tokens_total": 475.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2682.34,
+          "effective_input_per_ttft": 2651.13,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 646,
+          "normalized_fields": {
+            "order_id": "BENCH-2eb982af",
+            "order_amount": 159000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 24.742,
+          "wall_s": 31.999,
+          "prompt_tokens": 65536,
+          "completion_tokens": 492,
+          "decode_tps": 67.79,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-d609377f\",\n  \"order_amount\": 242000,\n  \"deposit_amount\": 32000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-d609377f，合同总金额为242000元，目前已收到定金32000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏明确凭证，因此财务状态标记为unverified。在项目管理与验收过程中，核心关注点在于施工资料的真实性与完整性。根据第00000条至第02040条的连续记录，所有条目均强调“施工资料模板”的使用规范，明确要求必须核对现场尺寸、安装顺序、材料规格以及与客户确认的记录。这一反复出现的指令表明，项目方高度重视现场证据的独立性，严禁以标准化的模板文档直接代替实际施工过程中的现场证据。这意味着在最终验收或结算时，不能仅凭填写好的模板表格作为依据，而必须提供能够证明现场实际施工情况与模板描述一致的独立证据，如现场测量数据、安装过程照片、材料进场验收单及客户签字确认单等。待核实事项主要集中在财务闭环与现场证据链的完整性上。首先，需跟进费用审批流程，确认审批何时结束，并获取公司付款的正式凭证，以解决当前付款状态未验证的问题。其次，需重点核查施工资料中关于现场尺寸、安装顺序和材料使用的记录是否具备独立的现场证据支持，确保不以模板代替现场证据。已知事实包括订单基本信息、定金收取情况及预计交付时间，但现场具体施工细节需通过独立证据链进行验证。项目摘要旨在明确当前状态：财务流程未闭环，付款凭证缺失，施工资料需严格遵循“现场证据优先”的原则。后续工作应聚焦于完善现场证据收集，确保尺寸、顺序、材料与客户确认记录均有据可查，同时推动费用审批完成并获取付款凭证，为项目最终交付和结算奠定坚实基础。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 64,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-d609377f",
+            "order_amount": 242000,
+            "deposit_amount": 32000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "f8c25f2868e3d73ed91402f8f7c41a7f1a4d8b70fa11d30a77a0213f51270fbe",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 694,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 24.467069120990345,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 7.27126878600393,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.9397004507482052e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 65536.0,
+            "generation_tokens_total": 492.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2678.54,
+          "effective_input_per_ttft": 2648.78,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 694,
+          "normalized_fields": {
+            "order_id": "BENCH-d609377f",
+            "order_amount": 242000,
+            "deposit_amount": 32000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 60.673,
+          "wall_s": 68.182,
+          "prompt_tokens": 131072,
+          "completion_tokens": 453,
+          "decode_tps": 60.33,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-4756de3e\",\n  \"order_amount\": 236000,\n  \"deposit_amount\": 45000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-4756de3e，合同总金额为236000元，目前已收到客户定金45000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏明确凭证，财务状态标记为unverified。在项目管理与施工资料管理方面，核心原则是“以现场证据为准，不以模板代替现场证据”。尽管系统或文档中包含了从第00000条至第04088条的大量施工资料模板记录，这些模板仅作为标准化参考框架，不能直接作为完工或验收的最终依据。所有施工环节必须严格核对以下关键现场证据：1. 现场尺寸：需确认实际测量数据与图纸设计的一致性，特别是关键安装节点的尺寸偏差；2. 安装顺序：需验证施工日志中记录的安装步骤是否符合工艺规范，确保工序逻辑正确；3. 材料确认：需保留材料进场验收单、品牌型号核对记录及客户对材料选型的书面或电子确认记录；4. 客户确认记录：所有涉及变更、隐蔽工程验收或关键节点确认的事项，必须有客户签字或明确同意的记录。鉴于目前费用审批未结且付款状态未验证，建议在最终结算前，重点梳理上述现场证据链，确保每一笔费用支出都有对应的现场施工证据支持，避免仅凭模板化文档进行结算。同时，需尽快跟进公司付款凭证的获取，以明确资金流向，确保项目财务闭环。在交付前，应再次复核所有模板条目对应的实际现场记录，确保无遗漏、无虚构，保障项目交付质量与财务合规性。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 128,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-4756de3e",
+            "order_amount": 236000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "18f7635bb1f2f8900fc8738058af49759dc660032e096229e14c1e5293c35feb",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 602,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 60.37044393000542,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 7.5395175390003715,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.8103994079865515e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 131072.0,
+            "generation_tokens_total": 453.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2171.13,
+          "effective_input_per_ttft": 2160.3,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 602,
+          "normalized_fields": {
+            "order_id": "BENCH-4756de3e",
+            "order_amount": 236000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+          "ttft_s": 60.737,
+          "wall_s": 66.93,
+          "prompt_tokens": 131072,
+          "completion_tokens": 404,
+          "decode_tps": 65.23,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "```json\n{\n  \"order_id\": \"BENCH-31a038ed\",\n  \"order_amount\": 213000,\n  \"deposit_amount\": 52000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-31a038ed，合同总金额为213000元，目前已收到定金52000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏明确凭证，财务状态标记为unverified。在项目管理过程中，需严格区分模板资料与现场实际证据。虽然系统内存在从第00000条至第04088条的大量施工资料模板记录，但所有模板内容均统一提示“请核对现场尺寸、安装顺序、材料与客户确认记录，不以模板代替现场证据”。这意味着，尽管模板提供了标准化的施工流程框架，但不能直接将其作为完工或验收的最终依据。已知事实包括订单基本信息、定金收取情况及预计交付时间，但待核实事项主要集中在费用审批的最终结果以及公司付款的实际执行凭证上。施工资料的使用边界在于：模板仅作为施工过程的参考指引，必须结合现场实测尺寸、实际安装顺序记录、材料进场验收单以及客户签字确认的变更或验收记录，才能形成完整的闭环证据链。严禁在未进行现场核对的情况下，直接引用模板数据作为结算或验收依据。鉴于目前审批未结且付款未证实，建议在后续流程中重点补充财务付款凭证，并确保证据链中每一项施工内容均有对应的现场实测数据支撑，以确保项目交付的合规性与财务结算的准确性。\"\n}\n```",
+          "code_validation": null,
+          "depth_kib_tokens": 128,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-31a038ed",
+            "order_amount": 213000,
+            "deposit_amount": 52000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "15ac32c0be2e91f77eea8c5c25aa1594cdd4e3e5eb7be09563338e91d556ef7c",
+          "raw_json_valid": false,
+          "facts_correct": {
+            "order_id": false,
+            "order_amount": false,
+            "deposit_amount": false,
+            "delivery_date": false,
+            "approval_status": false,
+            "company_payment_status": false
+          },
+          "summary_characters": 0,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 60.43937772999925,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 6.221601903991541,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.974801125470549e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 131072.0,
+            "generation_tokens_total": 404.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2168.65,
+          "effective_input_per_ttft": 2158.03,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 539,
+          "normalized_fields": {
+            "order_id": "BENCH-31a038ed",
+            "order_amount": 213000,
+            "deposit_amount": 52000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": true
+        }
+      ],
+      "warmup": {
+        "case": "warmup",
+        "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+        "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+        "ttft_s": 0.094,
+        "wall_s": 0.125,
+        "prompt_tokens": 55,
+        "completion_tokens": 2,
+        "decode_tps": 62.97,
+        "speed_sample_sufficient": false,
+        "finish_reason": "stop",
+        "code_validation": null
+      },
+      "fixture_recipes": [
+        {
+          "depth_kib_tokens": 8,
+          "target_input_tokens": 8192,
+          "trial": 1,
+          "nonce": "480cecadad9149baadf25bebade6f6b7",
+          "filler_lines": 249,
+          "padding_tokens": 18,
+          "expected": {
+            "order_id": "BENCH-480cecad",
+            "order_amount": 207000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "76fbbf83b83d66cb572e0f7565f4f746cf806dc005cce83a5983fd489e468715"
+        },
+        {
+          "depth_kib_tokens": 8,
+          "target_input_tokens": 8192,
+          "trial": 2,
+          "nonce": "a073d672c1bc404aa3039d3a13173185",
+          "filler_lines": 249,
+          "padding_tokens": 8,
+          "expected": {
+            "order_id": "BENCH-a073d672",
+            "order_amount": 232000,
+            "deposit_amount": 72000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "41ba036c4f9d9633e267aeabaeb25fe660740fa32b5a133795da9b1a48774845"
+        },
+        {
+          "depth_kib_tokens": 32,
+          "target_input_tokens": 32768,
+          "trial": 1,
+          "nonce": "df4f51fc66ca470781402181ebacbedc",
+          "filler_lines": 1017,
+          "padding_tokens": 14,
+          "expected": {
+            "order_id": "BENCH-df4f51fc",
+            "order_amount": 207000,
+            "deposit_amount": 67000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "c26c8ed7d89ef27d2fd592e73590e29fc869977c8451a0f836266c196c259c25"
+        },
+        {
+          "depth_kib_tokens": 32,
+          "target_input_tokens": 32768,
+          "trial": 2,
+          "nonce": "91cc7c7db15149f4ab516a1d86b58435",
+          "filler_lines": 1017,
+          "padding_tokens": 8,
+          "expected": {
+            "order_id": "BENCH-91cc7c7d",
+            "order_amount": 170000,
+            "deposit_amount": 68000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "701655087a37b8284197da59be363beb1bf91f9c2bdd635354c2211d8f069403"
+        },
+        {
+          "depth_kib_tokens": 64,
+          "target_input_tokens": 65536,
+          "trial": 1,
+          "nonce": "2eb982af76c44830b4798d5550fe3d4f",
+          "filler_lines": 2041,
+          "padding_tokens": 9,
+          "expected": {
+            "order_id": "BENCH-2eb982af",
+            "order_amount": 159000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "14ec673bad0df3a66faffaf93ee84a9608da83efb9a8aad4f099ac83d1458dc0"
+        },
+        {
+          "depth_kib_tokens": 64,
+          "target_input_tokens": 65536,
+          "trial": 2,
+          "nonce": "d609377f00c647f1b032c87054b13e1c",
+          "filler_lines": 2041,
+          "padding_tokens": 6,
+          "expected": {
+            "order_id": "BENCH-d609377f",
+            "order_amount": 242000,
+            "deposit_amount": 32000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "f8c25f2868e3d73ed91402f8f7c41a7f1a4d8b70fa11d30a77a0213f51270fbe"
+        },
+        {
+          "depth_kib_tokens": 128,
+          "target_input_tokens": 131072,
+          "trial": 1,
+          "nonce": "4756de3e3bc54cbcace251b3d3f6340a",
+          "filler_lines": 4089,
+          "padding_tokens": 11,
+          "expected": {
+            "order_id": "BENCH-4756de3e",
+            "order_amount": 236000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "18f7635bb1f2f8900fc8738058af49759dc660032e096229e14c1e5293c35feb"
+        },
+        {
+          "depth_kib_tokens": 128,
+          "target_input_tokens": 131072,
+          "trial": 2,
+          "nonce": "31a038ed33e447f38128415f527b9ea3",
+          "filler_lines": 4089,
+          "padding_tokens": 7,
+          "expected": {
+            "order_id": "BENCH-31a038ed",
+            "order_amount": 213000,
+            "deposit_amount": 52000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "15ac32c0be2e91f77eea8c5c25aa1594cdd4e3e5eb7be09563338e91d556ef7c"
+        }
+      ],
+      "completed_at_utc": "2026-10-13T09:58:02.874768+00:00",
+      "memory_sampling_summary": {
+        "sample_count": 577,
+        "peak_vram_gib": 29.30091094970703,
+        "minimum_free_vram_gib": 2.5584640502929688,
+        "minimum_memavailable_gib": 15.547786712646484
+      },
+      "post_sweep_model_states": {
+        "llama-server-35b": {
+          "Status": "exited",
+          "ExitCode": 0,
+          "OOMKilled": false
+        },
+        "llama-server-vl": {
+          "Status": "exited",
+          "ExitCode": 0,
+          "OOMKilled": false
+        },
+        "exp-qwen38-27b-abliterated-live-v2": {
+          "Status": "running",
+          "ExitCode": 0,
+          "OOMKilled": false
+        },
+        "exp-qwen38-27b-standard-live-v2": {
+          "Status": "exited",
+          "ExitCode": 0,
+          "OOMKilled": false
+        }
+      }
+    },
+    "standard": {
+      "schema_version": 1,
+      "model": "Qwen3.8-27B-MXFP4-DFlash",
+      "started_at_utc": "2026-10-13T09:58:41.137521+00:00",
+      "max_tokens": 1536,
+      "context": 163840,
+      "points": [
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 2.546,
+          "wall_s": 10.419,
+          "prompt_tokens": 8192,
+          "completion_tokens": 503,
+          "decode_tps": 63.89,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "```json\n{\n  \"order_id\": \"BENCH-480cecad\",\n  \"order_amount\": 207000,\n  \"deposit_amount\": 45000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本摘要针对订单号BENCH-480cecad进行事实梳理与风险提示。已知核心事实如下：该订单总金额为207,000元，目前已收到定金45,000元，预计交付日期为2026年11月18日。目前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏有效凭证，因此公司付款状态标记为unverified。在项目管理过程中，需特别关注施工资料的使用边界。根据第00000条至第00248条的连续记录，所有条目均强调“施工资料模板，请核对现场尺寸、安装顺序、材料与客户确认记录，不以模板代替现场证据”。这一反复出现的提示表明，当前项目存在大量依赖模板化文档的情况，但模板本身不能替代真实的现场证据。因此，在后续执行与验收中，必须严格区分模板与现场实际：所有现场尺寸、安装顺序、材料规格及客户确认记录，均须以实际测量、施工影像、客户签字确认等现场证据为准，严禁直接套用模板数据作为验收或结算依据。待核实事项包括：1）费用审批流程的具体进度及预计完成时间；2）公司付款凭证的补全与确认，以明确资金流转状态；3）现场实际尺寸与模板设计尺寸的偏差核查；4）安装顺序是否符合现场条件及客户最终确认；5）材料进场验收记录是否完整且与合同一致。本摘要不虚构任何现场施工情况，亦不逐行抄写模板内容，仅基于已知事实与待核实事项进行客观陈述。项目团队应建立“模板参考、现场实证”的双轨核对机制，确保每一关键节点均有可追溯的现场证据支撑，避免因模板化操作导致验收争议或法律风险。在交付日期2026-11-18前，应完成所有现场证据的归档与客户确认，确保项目闭环。\"\n}\n```",
+          "code_validation": null,
+          "depth_kib_tokens": 8,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-480cecad",
+            "order_amount": 207000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "76fbbf83b83d66cb572e0f7565f4f746cf806dc005cce83a5983fd489e468715",
+          "raw_json_valid": false,
+          "facts_correct": {
+            "order_id": false,
+            "order_amount": false,
+            "deposit_amount": false,
+            "delivery_date": false,
+            "approval_status": false,
+            "company_payment_status": false
+          },
+          "summary_characters": 0,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 2.4706793169898447,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 7.871786492003594,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.7573009245097637e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 8192.0,
+            "generation_tokens_total": 503.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 3315.69,
+          "effective_input_per_ttft": 3217.6,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 668,
+          "normalized_fields": {
+            "order_id": "BENCH-480cecad",
+            "order_amount": 207000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": true
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 2.786,
+          "wall_s": 13.062,
+          "prompt_tokens": 8192,
+          "completion_tokens": 560,
+          "decode_tps": 54.5,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "```json\n{\n  \"order_id\": \"BENCH-a073d672\",\n  \"order_amount\": 232000,\n  \"deposit_amount\": 72000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本摘要针对订单编号BENCH-a073d672进行事实梳理与风险提示。已知核心事实如下：该订单总金额为232,000元，目前已收到定金72,000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏有效凭证，因此公司付款状态标记为unverified。在财务与合同执行层面，需重点关注审批流程的闭环管理，确保在审批完成前不擅自启动超出定金覆盖范围的支出，并尽快补充或核实公司付款凭证，以明确资金流向与合同履约进度。关于施工资料，系统记录中第00000条至第00248条均显示为“施工资料模板”，内容统一提示“请核对现场尺寸、安装顺序、材料与客户确认记录，不以模板代替现场证据”。这表明当前归档的施工资料仅为模板占位符，尚未包含具体的现场实测数据、实际安装工序记录或客户签字确认的实质性内容。因此，严禁直接引用这些模板条目作为工程验收、质量追溯或结算依据。待核实事项包括：1. 现场实际尺寸与图纸是否一致；2. 材料进场验收记录及品牌规格是否符合合同约定；3. 安装顺序是否符合工艺规范；4. 客户对关键节点的书面确认记录是否完整。施工资料使用边界明确：模板仅作为文档格式参考，不具备法律效力或工程事实证明力。所有施工证据必须基于现场实际发生的情况，通过拍照、测量记录、监理签字、客户确认单等原始凭证进行补充和替换。在正式交付前，必须完成从模板到实际施工记录的替换工作，确保每一份施工资料都能对应到具体的现场证据，避免以模板代替现场证据导致的合规风险。建议项目组立即启动现场资料补录工作，重点补齐尺寸核对单、材料进场单、隐蔽工程验收单及客户确认记录，确保在2026年11月18日交付前形成完整、真实、可追溯的施工档案。同时，财务部门应跟进费用审批进度，并在审批通过后及时核对付款凭证，确保资金支付与工程进度匹配。\"\n}\n```",
+          "code_validation": null,
+          "depth_kib_tokens": 8,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-a073d672",
+            "order_amount": 232000,
+            "deposit_amount": 72000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "41ba036c4f9d9633e267aeabaeb25fe660740fa32b5a133795da9b1a48774845",
+          "raw_json_valid": false,
+          "facts_correct": {
+            "order_id": false,
+            "order_amount": false,
+            "deposit_amount": false,
+            "delivery_date": false,
+            "approval_status": false,
+            "company_payment_status": false
+          },
+          "summary_characters": 0,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 2.521750621992396,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 10.27785228700668,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.648200850468129e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 8192.0,
+            "generation_tokens_total": 560.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 3248.54,
+          "effective_input_per_ttft": 2940.42,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 782,
+          "normalized_fields": {
+            "order_id": "BENCH-a073d672",
+            "order_amount": 232000,
+            "deposit_amount": 72000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": true
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 11.51,
+          "wall_s": 22.882,
+          "prompt_tokens": 32768,
+          "completion_tokens": 576,
+          "decode_tps": 50.65,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-df4f51fc\",\n  \"order_amount\": 207000,\n  \"deposit_amount\": 67000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本摘要针对订单号BENCH-df4f51fc进行事实梳理与风险提示。已知核心事实包括：订单总金额为207,000元，目前已收到定金67,000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏有效凭证，因此付款状态标记为未核实（unverified）。在财务与合同执行层面，需重点跟进审批流程的闭环，并尽快补充公司付款的银行回单或财务凭证，以明确资金流向与合同履约进度，避免后续结算产生争议。关于施工资料，系统记录中包含了从第00000条至第01016条的大量条目，内容均为“施工资料模板，请核对现场尺寸、安装顺序、材料与客户确认记录，不以模板代替现场证据”。这一重复性提示明确界定了施工资料的使用边界：模板仅作为标准化文档的框架或参考，绝不能直接替代真实的现场证据。在实际工程管理与验收过程中，必须严格区分模板与实证。具体而言，现场尺寸必须通过实地测量获取，安装顺序需依据实际施工日志记录，材料使用情况需对应具体的进场验收单，所有关键节点均需保留与客户确认的书面或电子记录。严禁以通用模板内容充抵具体的现场施工证据，否则将导致工程档案失真，无法作为质量验收、进度确认或纠纷处理的合法依据。待核实事项主要集中在两个方面：一是费用审批的最终结果及时间节点，二是公司付款凭证的补全。建议项目组立即启动现场证据的独立采集工作，确保每一项施工记录都具备唯一性、真实性和可追溯性，杜绝“以模板代证据”的合规风险。同时，应建立严格的资料审核机制，对提交的施工文档进行实质性审查，确认其包含具体的现场数据而非通用模板文本。在交付日期2026-11-18临近前，需完成所有现场证据的归档与客户确认，确保工程交付与财务结算的同步合规。综上所述，本项目在财务状态上存在信息缺口，需优先解决付款凭证缺失问题；在工程资料上需严守“模板不代替证据”的红线，确保所有施工记录真实反映现场情况，以保障项目顺利交付及后续审计合规。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 32,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-df4f51fc",
+            "order_amount": 207000,
+            "deposit_amount": 67000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "c26c8ed7d89ef27d2fd592e73590e29fc869977c8451a0f836266c196c259c25",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 827,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 11.25352331501199,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 11.380750873999204,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.713199890218675e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 32768.0,
+            "generation_tokens_total": 576.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2911.8,
+          "effective_input_per_ttft": 2846.92,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 827,
+          "normalized_fields": {
+            "order_id": "BENCH-df4f51fc",
+            "order_amount": 207000,
+            "deposit_amount": 67000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 11.386,
+          "wall_s": 20.319,
+          "prompt_tokens": 32768,
+          "completion_tokens": 501,
+          "decode_tps": 56.09,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "```json\n{\n  \"order_id\": \"BENCH-91cc7c7d\",\n  \"order_amount\": 170000,\n  \"deposit_amount\": 68000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本摘要针对订单号BENCH-91cc7c7d进行事实梳理与风险提示。已知核心事实如下：该订单总金额为170,000元，目前已收到定金68,000元，预计交付日期为2026年11月18日。目前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏有效凭证，因此公司付款状态标记为unverified。在财务与流程层面，需重点跟进审批流程的闭环，并尽快补充或核实公司付款的银行流水或发票等凭证，以确保资金流向清晰、合规。关于施工资料，系统记录中包含了从第00000条至第01016条的大量条目，内容均为“施工资料模板，请核对现场尺寸、安装顺序、材料与客户确认记录，不以模板代替现场证据”。这表明当前资料库中主要存储的是标准化模板，而非具体的现场执行数据。根据规定，严禁以模板代替现场证据。因此，在后续的项目验收、结算或审计过程中，必须严格区分模板与真实记录。待核实事项包括：1. 现场实际尺寸是否与模板预设一致，需调取现场实测数据；2. 实际安装顺序是否符合工艺规范，需查阅施工日志；3. 实际使用的材料品牌、规格是否与合同及客户确认记录一致，需核对进场验收单；4. 客户对关键节点的确认记录是否完整，需补充签字或电子确认文件。施工资料的使用边界明确：模板仅作为格式参考和流程指引，不能作为证明施工已按标准完成的法律依据。所有涉及质量、进度和成本的认定，必须基于带有时间戳、人员签名及现场影像的原始记录。鉴于目前审批未结且付款凭证缺失，建议在交付前完成所有现场证据的归档与核对，确保每一笔费用支出都有对应的现场施工证据支撑，避免后续产生合同纠纷或审计风险。\"\n}\n```",
+          "code_validation": null,
+          "depth_kib_tokens": 32,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-91cc7c7d",
+            "order_amount": 170000,
+            "deposit_amount": 68000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "701655087a37b8284197da59be363beb1bf91f9c2bdd635354c2211d8f069403",
+          "raw_json_valid": false,
+          "facts_correct": {
+            "order_id": false,
+            "order_amount": false,
+            "deposit_amount": false,
+            "delivery_date": false,
+            "approval_status": false,
+            "company_payment_status": false
+          },
+          "summary_characters": 0,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 11.123563863991876,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 8.940810594009236,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.786400389391929e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 32768.0,
+            "generation_tokens_total": 501.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2945.82,
+          "effective_input_per_ttft": 2877.92,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 679,
+          "normalized_fields": {
+            "order_id": "BENCH-91cc7c7d",
+            "order_amount": 170000,
+            "deposit_amount": 68000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": true
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 25.302,
+          "wall_s": 36.499,
+          "prompt_tokens": 65536,
+          "completion_tokens": 538,
+          "decode_tps": 48.05,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-2eb982af\",\n  \"order_amount\": 159000,\n  \"deposit_amount\": 45000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-2eb982af，合同总金额为159,000元。目前项目处于执行初期，已收到客户支付的定金45,000元，预计交付日期设定为2026年11月18日。在财务与行政流程方面，当前的费用审批流程尚未结束，处于pending状态；同时，关于公司是否已完成相应款项支付，目前缺乏有效的凭证支持，状态标记为unverified，需后续补充相关财务单据以确认资金流向。在工程实施与资料管理层面，系统内记录了从第00000条至第02040条共计2041条施工资料条目。经核查，这些条目内容高度重复，均指向同一类“施工资料模板”，其核心要求是：必须严格核对现场实际尺寸、确认安装顺序、验证材料规格，并保留与客户确认的完整记录。特别强调，严禁直接以通用模板内容代替具体的现场证据。这意味着，尽管模板提供了标准化的记录框架，但每一份最终归档的施工资料必须包含针对该特定工位的实测数据、实物照片或视频、材料进场验收单以及客户签字确认的变更或验收记录。模板仅作为格式参考，不能证明实际施工已按规范完成。鉴于当前审批未结且付款凭证缺失，建议在后续工作中重点跟进财务审批进度，并收集公司付款的银行回单或发票等凭证，以完善项目档案。同时，施工团队需严格执行“现场证据优先”原则，确保每一道工序的留痕资料真实反映现场情况，避免使用模板数据充抵实际记录，从而保障工程质量和法律合规性。待核实事项包括：1. 费用审批的具体完成时间及结果；2. 公司付款凭证的获取与归档；3. 现场实际尺寸与模板预设尺寸的偏差记录；4. 客户对关键节点（如隐蔽工程、材料进场）的书面确认记录是否齐全。本摘要旨在厘清项目当前状态，明确资料使用的边界，即模板仅为形式指引，实质内容必须源于现场实测与客户确认，不得虚构或简化现场情况。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 64,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-2eb982af",
+            "order_amount": 159000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "14ec673bad0df3a66faffaf93ee84a9608da83efb9a8aad4f099ac83d1458dc0",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 750,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 25.046909764991142,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 11.211178848010604,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.752300886437297e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 65536.0,
+            "generation_tokens_total": 538.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2616.53,
+          "effective_input_per_ttft": 2590.15,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 750,
+          "normalized_fields": {
+            "order_id": "BENCH-2eb982af",
+            "order_amount": 159000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 25.4,
+          "wall_s": 36.681,
+          "prompt_tokens": 65536,
+          "completion_tokens": 565,
+          "decode_tps": 50.09,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "```json\n{\n  \"order_id\": \"BENCH-d609377f\",\n  \"order_amount\": 242000,\n  \"deposit_amount\": 32000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本摘要针对订单号BENCH-d609377f进行事实梳理与风险提示。已知核心事实包括：该订单总金额为242,000元，目前已收到定金32,000元，预计交付日期为2026年11月18日。当前项目处于费用审批尚未结束的状态，且公司是否已进行后续付款缺乏有效凭证，因此付款状态标记为未核实（unverified）。在财务与合同执行层面，需重点跟进审批流程的闭环，并尽快补充公司付款的银行回单或财务凭证，以明确资金流向与合同履约进度，避免后续结算产生争议。关于施工资料，系统记录中包含了从第00000条至第02040条的大量条目，内容均为“施工资料模板，请核对现场尺寸、安装顺序、材料与客户确认记录，不以模板代替现场证据”。这一重复性记录表明，当前项目可能处于资料归档的初始阶段或模板填充阶段，尚未形成具有唯一性、具体性的现场施工记录。必须严格遵循“不以模板代替现场证据”的原则，严禁将通用模板直接作为验收或结算依据。待核实事项主要集中在现场实际执行情况：一是现场尺寸是否与图纸及客户确认记录完全一致；二是安装顺序是否符合工艺规范及客户特定要求；三是实际使用的材料品牌、规格是否与合同约定及客户确认记录相符。由于缺乏具体的现场实测数据、影像资料及客户签字确认单，目前无法对施工质量进行实质性评估。建议项目组立即停止依赖模板化记录，转而建立基于现场实测、影像留存及客户即时确认的动态档案。在交付日期（2026-11-18）到来前，必须完成所有现场证据的采集与归档，确保每一道工序都有对应的现场尺寸记录、安装顺序日志及材料验收单。同时，鉴于审批未结束且付款未核实，建议在完成现场证据固化前，暂缓进行最终结算或尾款支付，直至所有待核实事项（现场尺寸、安装顺序、材料确认）均获得客户书面或电子确认，且公司付款凭证补齐后，方可进入最终验收与交付流程。此举旨在确保项目交付的合规性、可追溯性及财务安全性。\"\n}\n```",
+          "code_validation": null,
+          "depth_kib_tokens": 64,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-d609377f",
+            "order_amount": 242000,
+            "deposit_amount": 32000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "f8c25f2868e3d73ed91402f8f7c41a7f1a4d8b70fa11d30a77a0213f51270fbe",
+          "raw_json_valid": false,
+          "facts_correct": {
+            "order_id": false,
+            "order_amount": false,
+            "deposit_amount": false,
+            "delivery_date": false,
+            "approval_status": false,
+            "company_payment_status": false
+          },
+          "summary_characters": 0,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 25.112742534998688,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 11.294803867000155,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.8234000890515745e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 65536.0,
+            "generation_tokens_total": 565.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2609.67,
+          "effective_input_per_ttft": 2580.16,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 793,
+          "normalized_fields": {
+            "order_id": "BENCH-d609377f",
+            "order_amount": 242000,
+            "deposit_amount": 32000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": true
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 61.76,
+          "wall_s": 74.132,
+          "prompt_tokens": 131072,
+          "completion_tokens": 556,
+          "decode_tps": 44.94,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-4756de3e\",\n  \"order_amount\": 236000,\n  \"deposit_amount\": 45000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-4756de3e，合同总金额为236,000元。目前项目已收取定金45,000元，预计交付日期为2026年11月18日。在财务与行政流程方面，费用审批流程尚未结束，状态标记为pending；同时，关于公司是否已完成相应款项支付，目前缺乏有效的支付凭证，状态标记为unverified，需后续补充银行回单或财务确认函以闭环该环节。\\n\\n关于施工资料的管理与使用，项目方提供了大量编号从00000至04088的施工资料模板。需要特别强调的是，这些模板仅作为文档格式参考，严禁直接以模板内容代替现场实际证据。所有施工记录必须基于真实的现场数据进行填写，具体包括：1. 现场尺寸：必须使用激光测距仪等工具实测并记录，不得沿用模板中的预设数值；2. 安装顺序：需根据现场实际工序逻辑及监理要求记录，确保施工过程可追溯；3. 材料确认：需核对进场材料的品牌、规格、型号及合格证，并与客户确认记录保持一致；4. 客户确认记录：所有关键节点（如隐蔽工程验收、变更签证等）必须取得客户或监理的书面签字确认。\\n\\n待核实事项主要包括：第一，需尽快完成费用审批流程，明确付款节点与金额；第二，需向财务部门核实公司付款状态，获取支付凭证以消除unverified状态；第三，需对已提交的施工资料进行合规性审查，剔除所有未替换的模板占位符，确保每一页资料均包含真实的现场照片、实测数据及签字盖章。施工团队应建立“现场采集-数据录入-交叉核对”的标准化流程，确保资料真实性。任何以模板代替现场证据的行为均视为资料造假，将导致验收不通过及合同违约风险。项目组需立即组织专项会议，明确资料填写责任人，并设定整改截止日期，确保在2026年11月18日交付前，所有施工资料达到归档标准，实现“一物一证、一序一记”，保障项目顺利结算与交付。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 128,
+          "trial": 1,
+          "expected": {
+            "order_id": "BENCH-4756de3e",
+            "order_amount": 236000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "18f7635bb1f2f8900fc8738058af49759dc660032e096229e14c1e5293c35feb",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 763,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 61.470982230996015,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 12.401570115005597,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 1.7412996385246515e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 131072.0,
+            "generation_tokens_total": 556.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2132.26,
+          "effective_input_per_ttft": 2122.28,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 763,
+          "normalized_fields": {
+            "order_id": "BENCH-4756de3e",
+            "order_amount": 236000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        },
+        {
+          "case": "depth_summary",
+          "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+          "ttft_s": 61.916,
+          "wall_s": 71.72,
+          "prompt_tokens": 131072,
+          "completion_tokens": 468,
+          "decode_tps": 47.74,
+          "speed_sample_sufficient": true,
+          "finish_reason": "stop",
+          "content": "{\n  \"order_id\": \"BENCH-31a038ed\",\n  \"order_amount\": 213000,\n  \"deposit_amount\": 52000,\n  \"delivery_date\": \"2026-11-18\",\n  \"approval_status\": \"pending\",\n  \"company_payment_status\": \"unverified\",\n  \"summary\": \"本项目订单编号为BENCH-31a038ed，合同总金额为213,000元。目前项目已收取定金52,000元，预计交付日期为2026年11月18日。在财务与行政流程方面，费用审批流程尚未结束，状态标记为pending；同时，关于公司是否已完成相应款项支付，目前缺乏有效的凭证支持，状态标记为unverified，需后续补充相关银行回单或财务确认函以闭环管理。\\n\\n关于施工资料的管理与使用，系统内记录了从第00000条至第04088条的大量条目，内容均为“施工资料模板，请核对现场尺寸、安装顺序、材料与客户确认记录，不以模板代替现场证据”。这一重复性提示明确界定了施工资料的使用边界：模板仅作为标准化文档的框架或参考，严禁直接以模板内容替代真实的现场施工证据。在实际执行与验收过程中，必须严格区分模板与现场实况，所有关键节点（如现场尺寸测量、具体安装顺序、实际使用材料品牌及规格、客户对变更或确认事项的签字记录等）均必须基于现场实际发生的情况进行独立记录、拍照或签署确认单。\\n\\n待核实事项主要集中在两个维度：一是财务闭环，需尽快完成费用审批流程，并核实公司付款状态，确保资金流向与合同进度匹配；二是工程合规性，需逐一核对现场实际施工情况是否与模板要求一致，特别是尺寸偏差、材料替换及安装工艺是否符合客户确认记录。鉴于模板不能代替现场证据，建议在交付前进行专项审计，确保所有施工记录均有对应的现场影像或签字文件支撑，避免仅凭模板文档进行验收，从而保障项目交付质量及后续结算的合规性。\"\n}",
+          "code_validation": null,
+          "depth_kib_tokens": 128,
+          "trial": 2,
+          "expected": {
+            "order_id": "BENCH-31a038ed",
+            "order_amount": 213000,
+            "deposit_amount": 52000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "15ac32c0be2e91f77eea8c5c25aa1594cdd4e3e5eb7be09563338e91d556ef7c",
+          "raw_json_valid": true,
+          "facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "summary_characters": 639,
+          "engine_metric_delta": {
+            "request_prefill_time_seconds_sum": 61.60456682299264,
+            "request_prefill_time_seconds_count": 1.0,
+            "request_decode_time_seconds_sum": 9.833044552011415,
+            "request_decode_time_seconds_count": 1.0,
+            "request_queue_time_seconds_sum": 2.069000038318336e-05,
+            "request_success_total": 1.0,
+            "prompt_tokens_total": 131072.0,
+            "generation_tokens_total": 468.0,
+            "prefix_cache_hits_total": 0.0
+          },
+          "engine_metrics_valid": true,
+          "engine_prefill_tps": 2127.63,
+          "effective_input_per_ttft": 2116.93,
+          "normalized_json_valid": true,
+          "normalized_facts_correct": {
+            "order_id": true,
+            "order_amount": true,
+            "deposit_amount": true,
+            "delivery_date": true,
+            "approval_status": true,
+            "company_payment_status": true
+          },
+          "normalized_summary_characters": 639,
+          "normalized_fields": {
+            "order_id": "BENCH-31a038ed",
+            "order_amount": 213000,
+            "deposit_amount": 52000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "code_fence_removed_for_semantic_check": false
+        }
+      ],
+      "warmup": {
+        "case": "warmup",
+        "requested_model": "Qwen3.8-27B-MXFP4-DFlash",
+        "actual_model": "Qwen3.8-27B-MXFP4-DFlash",
+        "ttft_s": 193.233,
+        "wall_s": 193.269,
+        "prompt_tokens": 51,
+        "completion_tokens": 2,
+        "decode_tps": 55.58,
+        "speed_sample_sufficient": false,
+        "finish_reason": "stop",
+        "code_validation": null
+      },
+      "fixture_recipes": [
+        {
+          "depth_kib_tokens": 8,
+          "target_input_tokens": 8192,
+          "trial": 1,
+          "nonce": "480cecadad9149baadf25bebade6f6b7",
+          "filler_lines": 249,
+          "padding_tokens": 18,
+          "expected": {
+            "order_id": "BENCH-480cecad",
+            "order_amount": 207000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "76fbbf83b83d66cb572e0f7565f4f746cf806dc005cce83a5983fd489e468715"
+        },
+        {
+          "depth_kib_tokens": 8,
+          "target_input_tokens": 8192,
+          "trial": 2,
+          "nonce": "a073d672c1bc404aa3039d3a13173185",
+          "filler_lines": 249,
+          "padding_tokens": 8,
+          "expected": {
+            "order_id": "BENCH-a073d672",
+            "order_amount": 232000,
+            "deposit_amount": 72000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "41ba036c4f9d9633e267aeabaeb25fe660740fa32b5a133795da9b1a48774845"
+        },
+        {
+          "depth_kib_tokens": 32,
+          "target_input_tokens": 32768,
+          "trial": 1,
+          "nonce": "df4f51fc66ca470781402181ebacbedc",
+          "filler_lines": 1017,
+          "padding_tokens": 14,
+          "expected": {
+            "order_id": "BENCH-df4f51fc",
+            "order_amount": 207000,
+            "deposit_amount": 67000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "c26c8ed7d89ef27d2fd592e73590e29fc869977c8451a0f836266c196c259c25"
+        },
+        {
+          "depth_kib_tokens": 32,
+          "target_input_tokens": 32768,
+          "trial": 2,
+          "nonce": "91cc7c7db15149f4ab516a1d86b58435",
+          "filler_lines": 1017,
+          "padding_tokens": 8,
+          "expected": {
+            "order_id": "BENCH-91cc7c7d",
+            "order_amount": 170000,
+            "deposit_amount": 68000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "701655087a37b8284197da59be363beb1bf91f9c2bdd635354c2211d8f069403"
+        },
+        {
+          "depth_kib_tokens": 64,
+          "target_input_tokens": 65536,
+          "trial": 1,
+          "nonce": "2eb982af76c44830b4798d5550fe3d4f",
+          "filler_lines": 2041,
+          "padding_tokens": 9,
+          "expected": {
+            "order_id": "BENCH-2eb982af",
+            "order_amount": 159000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "14ec673bad0df3a66faffaf93ee84a9608da83efb9a8aad4f099ac83d1458dc0"
+        },
+        {
+          "depth_kib_tokens": 64,
+          "target_input_tokens": 65536,
+          "trial": 2,
+          "nonce": "d609377f00c647f1b032c87054b13e1c",
+          "filler_lines": 2041,
+          "padding_tokens": 6,
+          "expected": {
+            "order_id": "BENCH-d609377f",
+            "order_amount": 242000,
+            "deposit_amount": 32000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "f8c25f2868e3d73ed91402f8f7c41a7f1a4d8b70fa11d30a77a0213f51270fbe"
+        },
+        {
+          "depth_kib_tokens": 128,
+          "target_input_tokens": 131072,
+          "trial": 1,
+          "nonce": "4756de3e3bc54cbcace251b3d3f6340a",
+          "filler_lines": 4089,
+          "padding_tokens": 11,
+          "expected": {
+            "order_id": "BENCH-4756de3e",
+            "order_amount": 236000,
+            "deposit_amount": 45000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "18f7635bb1f2f8900fc8738058af49759dc660032e096229e14c1e5293c35feb"
+        },
+        {
+          "depth_kib_tokens": 128,
+          "target_input_tokens": 131072,
+          "trial": 2,
+          "nonce": "31a038ed33e447f38128415f527b9ea3",
+          "filler_lines": 4089,
+          "padding_tokens": 7,
+          "expected": {
+            "order_id": "BENCH-31a038ed",
+            "order_amount": 213000,
+            "deposit_amount": 52000,
+            "delivery_date": "2026-11-18",
+            "approval_status": "pending",
+            "company_payment_status": "unverified"
+          },
+          "prompt_sha256": "15ac32c0be2e91f77eea8c5c25aa1594cdd4e3e5eb7be09563338e91d556ef7c"
+        }
+      ],
+      "completed_at_utc": "2026-10-13T10:06:41.675952+00:00",
+      "memory_sampling_summary": {
+        "sample_count": 961,
+        "peak_vram_gib": 29.30091094970703,
+        "minimum_free_vram_gib": 2.5584640502929688,
+        "minimum_memavailable_gib": 3.7510337829589844
+      },
+      "post_sweep_model_states": {
+        "llama-server-35b": {
+          "Status": "exited",
+          "ExitCode": 0,
+          "OOMKilled": false
+        },
+        "llama-server-vl": {
+          "Status": "exited",
+          "ExitCode": 0,
+          "OOMKilled": false
+        },
+        "exp-qwen38-27b-abliterated-live-v2": {
+          "Status": "exited",
+          "ExitCode": 0,
+          "OOMKilled": false
+        },
+        "exp-qwen38-27b-standard-live-v2": {
+          "Status": "running",
+          "ExitCode": 0,
+          "OOMKilled": false
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Two runs per depth/model; grouped sequentially by checkpoint, not interleaved.",
+    "Actual output lengths and summary content vary; summary semantics are not comprehensively scored.",
+    "Synthetic repeated document with six facts, text only.",
+    "Order ID uses the first eight characters of the system test UUID; one abliterated response extended it with the UUID suffix.",
+    "No matched old Vulkan sweep was run; historical timing values are not a controlled baseline."
+  ],
+  "final_audit": {
+    "containers": {
+      "llama-server-35b": {
+        "Status": "exited",
+        "ExitCode": 0,
+        "OOMKilled": false
+      },
+      "llama-server-vl": {
+        "Status": "exited",
+        "ExitCode": 0,
+        "OOMKilled": false
+      },
+      "exp-qwen38-27b-abliterated-live-v2": {
+        "Status": "running",
+        "ExitCode": 0,
+        "OOMKilled": false
+      },
+      "exp-qwen38-27b-standard-live-v2": {
+        "Status": "exited",
+        "ExitCode": 0,
+        "OOMKilled": false
+      }
+    },
+    "proxy_sha256": "220cf7c6defa3c16d9c5e262dce402cd61630dedb11bc0e1ab94d0117dec2036",
+    "runner_sha256": "b26b3b3d346e9e8de78149daca8b5ff6adfbea13af2fccef8a59cc84881e35fa",
+    "sse_runner_sha256": "1f80e424c97c2aaca10c47ea5e672e8e0d35d1a0de3951eef17446a97852269f",
+    "kernel_boot_oom_count": 0,
+    "catalog": [
+      {
+        "id": "Qwen3.6-35B-A3B-abliterated-Q4K_M",
+        "object": "model",
+        "created": 1791886254,
+        "owned_by": "llama-proxy",
+        "max_model_len": 131072
+      },
+      {
+        "id": "Qwen3-VL-30B-Q4K_M",
+        "object": "model",
+        "created": 1791886254,
+        "owned_by": "llama-proxy",
+        "max_model_len": 32768
+      },
+      {
+        "id": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+        "object": "model",
+        "created": 1791886254,
+        "owned_by": "llama-proxy",
+        "max_model_len": 163840,
+        "engine": "vllm-radiance"
+      },
+      {
+        "id": "Qwen3.8-27B-MXFP4-DFlash",
+        "object": "model",
+        "created": 1791886254,
+        "owned_by": "llama-proxy",
+        "max_model_len": 163840,
+        "engine": "vllm-radiance"
+      }
+    ],
+    "restore_pretest_slot": {
+      "case": "restore_pretest_slot",
+      "requested_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+      "actual_model": "Huihui-Qwen3.8-27B-abliterated-MXFP4-DFlash",
+      "ttft_s": 189.302,
+      "wall_s": 189.333,
+      "prompt_tokens": 55,
+      "completion_tokens": 2,
+      "decode_tps": 63.47,
+      "speed_sample_sufficient": false,
+      "thinking_chars": 0,
+      "content": "READY",
+      "tool_calls": [],
+      "done": true,
+      "finish_reason": "stop"
+    }
+  }
+}
