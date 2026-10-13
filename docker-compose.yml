@@ -1,3 +1,7 @@
+# Historical alternative Vulkan examples, not the 2026-10-13 four-slot deployment.
+# Start ONE GPU service at a time; do not run all services together.
+# Native vLLM/Radiance + DFlash measurements and coordinator requirements:
+# docs/native-vllm-four-slots-20261013.md
 services:
   # ============================================
   # Configuration A: 35B MoE (no MTP)
@@ -84,8 +88,8 @@ services:
   #   Chinese prose     24.73 t/s vs 36.98                 LOSS -33%
   #   social copy       18.13 t/s vs 29.69                 LOSS -39%
   #   24K doc summarise 23.52 t/s vs 32.43                 LOSS -27%
-  # The drafter is trained on the NON-abliterated target; acceptance collapses on free-form prose
-  # (0.08-0.32) while staying high on code (0.80). Costs +1.85 GB VRAM, <=2% of prefill.
+  # The drafter adds per-step and fixed prefill costs; see the 2026-10-05 follow-up.
+  # Abliteration as a causal explanation was not established. Costs +1.85 GB VRAM.
   # Needs llama.cpp build 10820+ (PR #27342). Drafter: z-lab/Qwen3.8-27B-DFlash2-GGUF (Q4_K_M).
   # ============================================
   llama-27b-dflash:

@@ -1,5 +1,10 @@
 # Speculative draft width and the DFlash2 drafter — Qwen3.8-27B on the R9700
 
+> **Historical Vulkan experiment.** Its same-evening MTP rollback refers to 2026-10-04.
+> On 2026-10-13 the two 27B slots migrated to **native vLLM/Radiance + DFlash with MXFP4 targets**;
+> that is a different serving stack/checkpoint combination. See the
+> [new measurements](native-vllm-four-slots-20261013.md). The data below remains valid for its dated setup.
+
 **Measured 2026-10-04** · llama.cpp **build 10820** (`74a7c897f`, Vulkan) · RDNA4 `gfx1201` ·
 `RADV_DEBUG=nocompute` · `--ctx-size 262144` · `-b 16384 -ub 2048` · KV `q4_0/q4_0` ·
 Qwen3.8-27B-ABLITERATED Q4_K_M · one sequence, one GPU.

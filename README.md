@@ -1,22 +1,25 @@
-# AMD Radeon AI PRO R9700 / RX 9700 — llama.cpp Vulkan Inference Optimization Guide
+# AMD Radeon AI PRO R9700 / RX 9700 — Vulkan & Native vLLM Inference Measurements
 
-> RDNA4 (gfx1201) Vulkan 推理优化指南 — 覆盖 Dense 与 MoE 两种模型架构
+> RDNA4 (`gfx1201`) 推理实测：llama.cpp Vulkan + MTP / DFlash2，以及原生 Linux vLLM/Radiance + DFlash。
 >
-> RDNA4 (gfx1201) Vulkan inference optimization guide — covering Dense and MoE architectures
->
-> **Latest data: 2026-10-04** (draft width 4 / DFlash2 drafter) · 2026-10-03 (long-context scaling) ·
-> 2026-09-18 (per-model benchmarks) — llama.cpp
-> build 10820, one model per role, all measured on the same box: MoE text (35B-A3B), vision
-> (VL-30B-A3B), dense reasoning (27B + MTP). Only one runs at a time — 32 GB of VRAM does not hold
-> two of these.
+> **Latest data: 2026-10-13** — two 27B MXFP4 models migrated to native vLLM/Radiance + DFlash;
+> 35B text and VL-30B retained Vulkan. Four selectable slots, **one GPU model active at a time**.
+> See the [full migration report](docs/native-vllm-four-slots-20261013.md) and
+> [per-run data](results/2026-10-13-native-four-slots.json).
+> Earlier Vulkan measurements remain dated historical results; their server-side timings
+> are a different metric from the new end-to-end SSE estimates.
 
 [![GPU](https://img.shields.io/badge/GPU-AMD%20Radeon%20AI%20PRO%20R9700-red)](https://www.amd.com/en/products/graphics/workstations/radeon-ai-pro/r9700.html)
-[![Backend](https://img.shields.io/badge/Backend-Vulkan-blue)](https://github.com/ggml-org/llama.cpp)
+[![Backend](https://img.shields.io/badge/Backend-Vulkan%20%2B%20vLLM-blue)](docs/native-vllm-four-slots-20261013.md)
 [![Discussion](https://img.shields.io/badge/Discussion-%2319890-blue)](https://github.com/ggml-org/llama.cpp/discussions/19890)
 
 ---
 
 ## Hardware / 硬件配置
+
+Historical Vulkan environment below. The 2026-10-13 session used kernel **7.0.0-38-generic**
+and the pinned native stack in the [new report](docs/native-vllm-four-slots-20261013.md);
+older build/driver labels are not a fresh verification of every current component.
 
 | Component | Spec |
 |---|---|
@@ -32,7 +35,20 @@
 
 ## Models Tested / 已测试模型
 
-**Current generation (2026-09-18 retest, llama.cpp build 10820):**
+**Current slots (2026-10-13):**
+
+| Slot | Model | Backend | Total context |
+|---|---|---|---:|
+| A | Qwen3.6-35B-A3B abliterated, Q4_K | llama.cpp Vulkan | 131072 |
+| B | Qwen3-VL-30B, Q4_K_M | llama.cpp Vulkan | 32768 |
+| C | Huihui Qwen3.8-27B abliterated, MXFP4 | vLLM/Radiance + DFlash | 163840 |
+| D | Standard Qwen3.8-27B, MXFP4 | vLLM/Radiance + DFlash | 163840 |
+
+Single GPU, on-demand loading, five-minute idle unload. ComfyUI generation/voice uses a separate
+GPU lease. Context includes input, images and output; the native vision qualification is one image.
+Native cold reload took **177.7–204.9 s**, so hot token/s is not switching latency.
+
+**Historical Vulkan generation (2026-09-18 retest, llama.cpp build 10820):**
 
 | Model | Architecture | Size | Quant | File Size | Effective params/token |
 |---|---|---|---|---|---|
@@ -52,6 +68,38 @@
 ---
 
 ## Benchmark Results / 测试结果
+
+### 2026-10-13 — Native vLLM/Radiance + DFlash vs retained Vulkan
+
+Same three user prompts, two warm runs each, temperature 0, thinking off, unique system UUIDs.
+Rates below use actual SSE completion usage divided by time after the first generated content;
+actual output lengths vary. This changes runtime **and checkpoint/quantization**, not just backend.
+
+| Model | Chinese prose (token/s) | Valid code (token/s) | ~22.5K-doc decode (token/s) | Whole-doc response (s) |
+|---|---:|---:|---:|---:|
+| Old abliterated 27B, Vulkan + MTP | 46.67 | 62.73 | 46.38 | 45.67 |
+| Standard 27B, native vLLM/Radiance + DFlash | 66.11 | 151.87 | 70.22 | 17.17 |
+| Abliterated 27B, native vLLM/Radiance + DFlash | 44.53 | 114.82* | 78.13 | 16.87 |
+| 35B-A3B MoE, Vulkan | 141.75 | 143.02 | 135.73 | 13.57 |
+
+*The common 1024 output budget produced **0/2 valid code samples** for the abliterated native model
+(raw rate 142.70 token/s): one truncation and one complete but faulty parser. Two additional
+**4096-budget** samples passed 2/2 at 114.82 token/s; they are a separate experiment, not a replacement
+for the failures. Other models passed 2/2 at the original budget. Two runs do not establish general quality.
+
+- Both native 27B models passed **157987 input tokens + one image**, with 57 output tokens,
+  at fixed **163840** capacity. Sampled peak VRAM ~29.28 GiB, minimum free ~2.58 GiB; no observed OOM.
+- Both read all seven fields of one synthetic image after production reload. Retained VL-30B
+  misread both amounts by a factor of ten; numeric OCR needs verification.
+- Whole-document responses improved ~2.66–2.71× over the old 27B, including TTFT ~30 → ~7.3 s.
+  Abliterated prose was ~5% slower; standard prose was ~42% faster. 35B remains fastest for these text tasks.
+- Fixed-window fresh compilation initially failed KV capacity admission; populated-cache starts passed
+  unchanged guards. Cold reload is still minutes, and multi-image/video/full 262144 contexts are unqualified.
+
+Full methodology, checkpoint hashes, failures, switching and four-slot coordination:
+**[native migration report](docs/native-vllm-four-slots-20261013.md)** ·
+**[machine-readable samples](results/2026-10-13-native-four-slots.json)** ·
+**[SSE benchmark runner](scripts/bench-native-sse.py)**.
 
 ### 🆕 2026-09-18 Retest — Qwen3.8 / Qwen3-VL generation (llama.cpp build 10820)
 
@@ -411,7 +459,7 @@ Read `timings.prompt_per_second` / `timings.predicted_per_second` in the respons
 
 ## ✅ Optimizations That Work / 有效的优化项
 
-### Must-have for all models: `RADV_DEBUG=nocompute` & latest llama.cpp
+### Vulkan settings: `RADV_DEBUG=nocompute` & latest llama.cpp
 
 **Single most impactful setting for RDNA4 gfx1201 Vulkan.** Disables compute queue — routes all work through graphics queue, avoiding a performance regression on RADV.
 
@@ -423,13 +471,13 @@ environment:
 
 Without this: ~120 t/s → With this: **~138 t/s** (+15%). Also pair with the **latest llama.cpp master** for `KHR_cooperative_matrix` support — older builds without it benchmark ~117-120 t/s vs **~165 t/s**.
 
-### ✅ For 27B Dense: MTP Speculative Decoding
+### Historical Vulkan 27B Dense: MTP Speculative Decoding
 
 | Setting | tg Speedup |
 |---|---|
 | No MTP (baseline) | ~20 t/s |
 | MTP (`--spec-type draft-mtp`, `--spec-draft-n-max 3`) | ~42 t/s (2×) |
-| **MTP `--spec-draft-n-max 2` (serving default)** | **best all-round: 36.98 prose / 32.43 @24K summarise / 49.22 code** |
+| **MTP `--spec-draft-n-max 2` (historical Vulkan default)** | **best all-round: 36.98 prose / 32.43 @24K summarise / 49.22 code** |
 | MTP `--spec-draft-n-max 4 --spec-draft-p-min 0.10` | +15–25% on code/math/copy, **−20% on prose** — use only for structured workloads |
 | **DFlash2 (`-md` drafter, `--spec-draft-n-max 7`)** | **code/copy +40–80%, prose −26 to −39%** — code-only route |
 | Required pairing | `-b 16384 -ub 2048`, `--parallel 1`, `--flash-attn on` |
@@ -489,7 +537,7 @@ Resets on reboot. See [`scripts/system-optimize.sh`](scripts/system-optimize.sh)
 |---|---|---|---|
 | **MTP for MoE** | N/A | tg **-24%** (138→105) | MoE MTP head adds overhead; acceptance rate too low |
 | AMDVLK driver | pp degrades | pp degrades | Prefill drops significantly |
-| ROCm backend (HIP) | Slower | Slower | RDNA4 RADV Vulkan ~20% faster than ROCm HIP |
+| Historical llama.cpp HIP comparison | Slower in earlier tests | Slower in earlier tests | Not a universal ROCm conclusion: native vLLM/Radiance + DFlash has different results above; no current 35B vLLM A/B |
 | Turboquant (turbo2/3/4) | Slower | Slower | CPU decompression bottleneck, GPU util ~30% |
 | `GGML_VK_ALLOW_GRAPHICS_QUEUE=1` | No effect | No effect | Already covered by `RADV_DEBUG=nocompute` |
 | Dual GPU | tg **-25%** | tg **-25%** | PCIe split hurts decode more than it helps |
@@ -530,15 +578,22 @@ docker build -t llama-cpp-vulkan .
 
 ### Docker Compose
 
-See [`docker-compose.yml`](docker-compose.yml) for two configs:
+The historical [`docker-compose.yml`](docker-compose.yml) contains three **alternative Vulkan examples**,
+not the current four-slot native coordinator deployment:
+
 - `llama-35b` — MoE model, no MTP, `-b 4096 -ub 512`
 - `llama-27b` — Dense model, MTP enabled, `-b 16384 -ub 2048`
+- `llama-27b-dflash` — Historical Vulkan DFlash2 code/copy experiment
+
+Run only one GPU service at a time. Native setup is documented in the
+[new report](docs/native-vllm-four-slots-20261013.md) and its pinned upstream;
+this compose file does not implement mixed-backend admission or safe native unloading.
 
 ---
 
 ## Optimization Impact Summary / 优化效果汇总
 
-### 27B Dense Model
+### Historical Vulkan 27B Dense Model
 
 | Optimization | tg | pp | Notes |
 |---|---|---|---|
@@ -563,6 +618,8 @@ See [`docker-compose.yml`](docker-compose.yml) for two configs:
 ---
 
 ## References / 参考
+
+- [Pinned native vLLM/Radiance + DFlash implementation](https://github.com/mike2153/mbea-qwen38-dflash/tree/353a6baf35aaf792066b6a1a1e48caac9cf1571d)
 
 - [llama.cpp Discussion #19890 — R9700 Performance Study](https://github.com/ggml-org/llama.cpp/discussions/19890)
 - [llama.cpp RDNA4 Experiments Discussion #21043](https://github.com/ggml-org/llama.cpp/discussions/21043)
