@@ -1,9 +1,12 @@
 # Speculative draft width and the DFlash2 drafter — Qwen3.8-27B on the R9700
 
-> **Historical Vulkan experiment.** Its same-evening MTP rollback refers to 2026-10-04.
-> On 2026-10-13 the two 27B slots migrated to **native vLLM/Radiance + DFlash with MXFP4 targets**;
-> that is a different serving stack/checkpoint combination. See the
-> [new measurements](native-vllm-four-slots-20261013.md). The data below remains valid for its dated setup.
+> **Historical Vulkan experiment (llama.cpp GGUF path).** The same-evening “production reverted to
+> MTP n-max 2” note below means **2026-10-04 on this Vulkan/`--spec-type draft-mtp` stack only**.
+> It is **not** today’s HP serving config. Since **2026-10-13**, HP’s two 27B slots run
+> **native vLLM/Radiance + DFlash** (`method=dflash`, MXFP4 targets) — see
+> [native-vllm-four-slots-20261013.md](native-vllm-four-slots-20261013.md).
+> Root `docker-compose.yml` in this repo is the dated Vulkan template, not that live deployment.
+> Numbers on this page remain valid for the dated Vulkan setup only.
 
 **Measured 2026-10-04** · llama.cpp **build 10820** (`74a7c897f`, Vulkan) · RDNA4 `gfx1201` ·
 `RADV_DEBUG=nocompute` · `--ctx-size 262144` · `-b 16384 -ub 2048` · KV `q4_0/q4_0` ·
@@ -16,8 +19,9 @@ printed only when `n_tokens` matches the prompt actually sent and `truncated = 0
 > **⚠️ Read the [Boundary section](#-boundary-which-workload-the-drafter-actually-wins) before quoting any
 > number below.** Every table on this page was measured with "copy the document back verbatim" prompts,
 > the friendliest possible workload for a drafter. On realistic prompts — Chinese free-form writing and
-> long-document summarisation — the DFlash2 drafter is **26–39% slower** than plain MTP n-max 2, and
-> **production was reverted to MTP n-max 2** the same evening.
+> long-document summarisation — the Vulkan DFlash2 drafter was **26–39% slower** than plain MTP n-max 2,
+> so **that evening’s Vulkan slot was reverted to MTP n-max 2**. That rollback is historical (2026-10-04);
+> current HP 27B production is native vLLM DFlash as of 2026-10-13.
 
 ## Why this measurement exists
 
@@ -149,9 +153,11 @@ the recommendation:
 - **This also corrects our own depth series.** `long-context-scaling.md` measured 45.07 t/s at an 18K
   *copy* prompt; the same slot on an 18–24K *summarise* prompt delivers **32.4 t/s**. The series is
   internally consistent for A/B-ing configurations but is **not** a forecast for real work.
-- **Production decision (2026-10-04):** the slot was switched to DFlash2, validated end-to-end
-  (mmproj + drafter booted, 28.0/32.6 GB VRAM, vision path intact), and then **reverted to MTP n-max 2**
-  once the prose numbers landed. The drafter stays on disk for a future code-only route.
+- **Production decision (2026-10-04, Vulkan only):** the historical GGUF slot was switched to DFlash2,
+  validated end-to-end (mmproj + drafter booted, 28.0/32.6 GB VRAM, vision path intact), and then
+  **reverted to llama.cpp MTP n-max 2** once the prose numbers landed. The Vulkan drafter GGUF stayed
+  on disk for a dated code-only route. **Superseded 2026-10-13:** HP 27B production moved to
+  **native vLLM/Radiance + DFlash** — see [native-vllm-four-slots-20261013.md](native-vllm-four-slots-20261013.md).
 
 ### Width matters on prose too — same-session A/B (2026-10-05)
 

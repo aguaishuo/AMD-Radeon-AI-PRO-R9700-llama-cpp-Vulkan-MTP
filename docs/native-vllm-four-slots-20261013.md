@@ -1,8 +1,12 @@
 # R9700: native vLLM/Radiance + DFlash and four model slots
 
+**Current HP production path for the two 27B slots (since 2026-10-13).**
+This is **not** the 2026-10-04 Vulkan/`--spec-type draft-mtp` rollback, and **not** root
+`docker-compose.yml` (that file remains a historical Vulkan template).
+
 **Measured 2026-10-13, Ubuntu native Linux, one R9700 (`gfx1201`).**
 The final routing checks completed around 11:45 China Standard Time (UTC+8).
-This extends the earlier Vulkan reports; it does not replace their measurements.
+This extends the earlier Vulkan reports; it does not erase their dated measurements.
 
 **Follow-up:** [exact 8K / 32K / 64K / 128K native depth sweep](native-depth-scaling-20261013.md),
 16 additional samples with engine PP, paired prompts and retained answer/format errors.

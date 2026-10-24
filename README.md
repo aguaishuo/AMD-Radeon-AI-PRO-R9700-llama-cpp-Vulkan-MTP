@@ -2,11 +2,19 @@
 
 > RDNA4 (`gfx1201`) 推理实测：llama.cpp Vulkan + MTP / DFlash2，以及原生 Linux vLLM/Radiance + DFlash。
 >
-> **Latest data: 2026-10-13** — two 27B MXFP4 models migrated to native vLLM/Radiance + DFlash;
-> 35B text and VL-30B retained Vulkan. Four selectable slots, **one GPU model active at a time**.
-> Latest follow-up: [exact 8K–128K native depth sweep](docs/native-depth-scaling-20261013.md).
-> See the [full migration report](docs/native-vllm-four-slots-20261013.md) and
-> [per-run data](results/2026-10-13-native-four-slots.json).
+> **Current HP production (since 2026-10-13):** the two 27B slots serve **native vLLM/Radiance + DFlash**
+> (`--speculative-config method=dflash`, not llama.cpp `--spec-type draft-mtp` / `draft-dflash`).
+> 35B text and VL-30B stay on Vulkan. Four selectable slots, **one GPU model active at a time**.
+> Canonical write-up: [docs/native-vllm-four-slots-20261013.md](docs/native-vllm-four-slots-20261013.md)
+> · follow-up [exact 8K–128K native depth sweep](docs/native-depth-scaling-20261013.md)
+> · [per-run data](results/2026-10-13-native-four-slots.json).
+>
+> **Do not confuse with 2026-10-04:** that evening's Vulkan DFlash2 trial and same-night rollback to
+> **llama.cpp MTP n-max 2** applied only to the historical GGUF/`--spec-type draft-mtp` path.
+> Root [`docker-compose.yml`](docker-compose.yml) is the **historical Vulkan template** (MTP / Vulkan
+> DFlash2 examples) — not the live HP coordinator compose. Native production is documented in the
+> migration report above, not by copying this file onto the host.
+>
 > Earlier Vulkan measurements remain dated historical results; their server-side timings
 > are a different metric from the new end-to-end SSE estimates.
 
@@ -416,9 +424,11 @@ From [llama.cpp discussion #19890](https://github.com/ggml-org/llama.cpp/discuss
   and a real 24K-document *summarise* task 23.52 vs **32.43** — at the report's own `n-max 3` the gaps
   narrow to **12–27%** (same-session A/B in the doc) but MTP still wins. The +63%-at-104K headline above came from
   a 104K *copy* prompt: the drafter is trained on the non-abliterated target and accepts only 0.08–0.32
-  on prose. **Production was switched to DFlash2, validated end-to-end (mmproj + drafter, 28.0/32.6 GB
-  VRAM, vision intact) and reverted to MTP n-max 2 the same evening.** The drafter stays on disk for a
-  code-only route.
+  on prose. **That same evening (2026-10-04), the historical Vulkan 27B slot was switched to DFlash2,
+  validated end-to-end (mmproj + drafter, 28.0/32.6 GB VRAM, vision intact), then reverted to llama.cpp
+  MTP n-max 2.** That rollback is **not** current HP production: since **2026-10-13** both 27B slots
+  run **native vLLM/Radiance + DFlash** — see [native four-slot report](docs/native-vllm-four-slots-20261013.md).
+  The old Vulkan drafter GGUF remained on disk only as a dated code-only experiment.
 - ⚠️ **A/B speculative decoders on your own prompt mix, never on a copy task.**
 - ⚠️ **Speculative routes are not byte-identical at temperature 0.** The same coding prompt produced
   semantically identical code under MTP and DFlash2 but not byte-identical text (one `import` line moved).
@@ -602,16 +612,19 @@ docker build -t llama-cpp-vulkan .
 
 ### Docker Compose
 
-The historical [`docker-compose.yml`](docker-compose.yml) contains three **alternative Vulkan examples**,
-not the current four-slot native coordinator deployment:
+Root [`docker-compose.yml`](docker-compose.yml) is a **historical Vulkan template only**.
+It is **not** the live HP production compose. Since **2026-10-13**, HP 27B production is
+**native vLLM/Radiance + DFlash** (`method=dflash`) documented in
+[docs/native-vllm-four-slots-20261013.md](docs/native-vllm-four-slots-20261013.md).
+
+The three services below are dated **alternative Vulkan examples** (llama.cpp `--spec-type`):
 
 - `llama-35b` — MoE model, no MTP, `-b 4096 -ub 512`
-- `llama-27b` — Dense model, MTP enabled, `-b 16384 -ub 2048`
-- `llama-27b-dflash` — Historical Vulkan DFlash2 code/copy experiment
+- `llama-27b` — Dense model, historical `--spec-type draft-mtp`, `-b 16384 -ub 2048`
+- `llama-27b-dflash` — Historical Vulkan `--spec-type draft-dflash` code/copy experiment
 
-Run only one GPU service at a time. Native setup is documented in the
-[new report](docs/native-vllm-four-slots-20261013.md) and its pinned upstream;
-this compose file does not implement mixed-backend admission or safe native unloading.
+Run only one GPU service at a time if you reproduce those old paths. This file does not implement
+mixed-backend admission or safe native unloading.
 
 ---
 

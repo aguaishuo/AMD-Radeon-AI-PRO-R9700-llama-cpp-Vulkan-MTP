@@ -1,7 +1,8 @@
-# Historical alternative Vulkan examples, not the 2026-10-13 four-slot deployment.
+# HISTORICAL Vulkan templates only (llama.cpp --spec-type draft-mtp / draft-dflash).
+# NOT the live HP production compose.
+# Current HP 27B production since 2026-10-13: native vLLM/Radiance + DFlash (method=dflash).
+# See docs/native-vllm-four-slots-20261013.md — do not treat this file as current production.
 # Start ONE GPU service at a time; do not run all services together.
-# Native vLLM/Radiance + DFlash measurements and coordinator requirements:
-# docs/native-vllm-four-slots-20261013.md
 services:
   # ============================================
   # Configuration A: 35B MoE (no MTP)
